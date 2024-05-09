@@ -140,6 +140,7 @@
     <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Ressources\Sprites\LevelBG1.png" />
     <Image Include="Ressources\Sprites\Player.png" />
     <Image Include="Ressources\Sprites\Titre.png" />
   </ItemGroup>

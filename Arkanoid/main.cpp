@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Player.h"
+#include "Game.h"
 
 using namespace sf;		// Namespace pour les objets de la librairie SFML
 using namespace std;	// Namespace pour les objets de la librairie standard en C++
@@ -9,11 +10,15 @@ int main() {
 
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "My window");
 	window.setFramerateLimit(60);
+	Game jeu;
 	Player player;
+
 	player.setTexture();
 	window.draw(player.getPlayer());
+	
+	jeu.bgSetTexture();
+	window.draw(jeu.getBackground());
 
-	IntRect _rectSprite(0, 0, 80, 20);
 
 	// on fait tourner le programme jusqu'à ce que la fenêtre soit fermée
 	while (window.isOpen())
@@ -35,6 +40,7 @@ int main() {
 				window.close();
 			}
 		}
+		window.draw(jeu.getBackground());
 		player.move();
 		player.idleAnimation();
 	}

@@ -2,10 +2,19 @@
 
 Game::Game()
 {
-	_fondEcran.setPosition(0, 0);				// On définit sa position
-	//_fondEcran.setSize(Vector2f(800, 600));		// On définit ses dimensions
+	_background;
+	_textureBG;
 }
 
-void Game::drawDecorations()
+bool Game::bgSetTexture()
 {
+	if (!_textureBG.loadFromFile("Ressources/Sprites/LevelBG1.png"))
+		return false;
+
+	_background.setTexture(_textureBG);
+}
+
+sf::Sprite Game::getBackground()
+{
+	return _background;
 }
