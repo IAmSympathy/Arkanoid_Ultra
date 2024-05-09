@@ -14,11 +14,7 @@ int main() {
 	Player player;
 
 	player.setTexture();
-	window.draw(player.getPlayer());
-	
 	jeu.bgSetTexture();
-	window.draw(jeu.getBackground());
-
 
 	// on fait tourner le programme jusqu'à ce que la fenêtre soit fermée
 	while (window.isOpen())
@@ -28,6 +24,7 @@ int main() {
 		// effacement de la fenêtre en noir
 		window.clear(Color::Black);
 		// c'est ici qu'on dessine tout
+		jeu.drawBG(window);
 		window.draw(player.getPlayer());
 		// fin de la frame courante, affichage de tout ce qu'on a dessiné
 		window.display();
@@ -40,7 +37,6 @@ int main() {
 				window.close();
 			}
 		}
-		window.draw(jeu.getBackground());
 		player.move();
 		player.idleAnimation();
 	}

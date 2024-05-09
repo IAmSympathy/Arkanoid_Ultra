@@ -8,13 +8,13 @@ class Game
 {
 private:
 	sf::Texture _textureBG;
-	sf::Sprite _background;
+	sf::RectangleShape _background;
 
 public:
 	Game();
 
 	bool bgSetTexture();
 
-	sf::Sprite getBackground();
+	void drawBG(sf::RenderWindow& window);
 };
 

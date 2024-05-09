@@ -4,7 +4,7 @@ using namespace std;	// Namespace pour les objets de la librairie standard en C+
 
 Player::Player()
 {
-	_player.setPosition(10, 20);				// On définit sa position
+	_player.setPosition(930, 1000);				// On définit sa position
 	_player.setSize(Vector2f(80, 20));		// On définit ses dimensions
 	_player.setFillColor(Color::White);
 	_rectSprite = IntRect(0, 0, 80, 20);
