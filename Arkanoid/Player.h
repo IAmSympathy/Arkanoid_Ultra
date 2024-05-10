@@ -22,5 +22,6 @@ public:
 	void idleAnimation();
 
 	sf::RectangleShape getPlayer();
+	void draw(sf::RenderWindow& window);
 };
 
