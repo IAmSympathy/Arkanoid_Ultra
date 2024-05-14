@@ -50,6 +50,7 @@ int main() {
 
 		//Actions du jeu
 		player.setIsDead(ball.GetIsUnderMap());
+		ball.SetIsUnderMap(player.GetIsDead());
 
 		//Actions du joueur
 		player.move();

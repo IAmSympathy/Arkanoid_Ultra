@@ -149,9 +149,20 @@ void Ball::setAngle(double xVelocity, double yVelocity)
 	_velocity.y = yVelocity;
 }
 
-void Ball::SetIsUnderMap(isUnderMap)
+void Ball::SetIsUnderMap(bool isUnderMap)
 {
 	_isUnderMap = isUnderMap;
+}
+
+
+bool Ball::GetIsUnderMap()
+{
+	return _isUnderMap;
+}
+
+void Ball::checkCollision(int value)
+{
+	_collision = value;
 }
 
 void Ball::bounce(int bounceReason)
@@ -174,19 +185,11 @@ void Ball::bounce(int bounceReason)
 	}
 
 
-}
 
-void Ball::checkCollision(int value)
-{
-	_collision = value;
 }
-
 void Ball::draw(sf::RenderWindow& window)
 {
 	window.draw(_ball);
 }
 
-bool Ball::GetIsUnderMap()
-{
-	return _isUnderMap;
-}
+
