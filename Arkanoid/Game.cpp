@@ -2,6 +2,8 @@
 
 Game::Game()
 {
+	_isDead = false;
+
 	_background.setPosition(0, 0);		// On définit sa position
 	_background.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
 	_border.setPosition(0, 0);		// On définit sa position
@@ -18,6 +20,7 @@ void Game::StartGame(int level)
 	_music.setVolume(13.f);
 	_music.play();
 }
+
 
 bool Game::SetBackground(int level)
 {
@@ -49,6 +52,39 @@ bool Game::SetMusic(int level)
 	}
 	_music.setBuffer(_buffer);
 }
+
+
+int Game::checkCollision(Player player, Ball ball)
+{
+	if (ball.getBall().getGlobalBounds().intersects(player.getCol(1).getGlobalBounds()))
+	{
+		return 1;
+	}
+	else if (ball.getBall().getGlobalBounds().intersects(player.getCol(2).getGlobalBounds()))
+	{
+		return 2;
+	}
+	else if (ball.getBall().getGlobalBounds().intersects(player.getCol(3).getGlobalBounds()))
+	{
+		return 3;
+	}
+	else if (ball.getBall().getGlobalBounds().intersects(player.getCol(4).getGlobalBounds()))
+	{
+		return 4;
+	}
+	else if (ball.getBall().getGlobalBounds().intersects(player.getCol(5).getGlobalBounds()))
+	{
+		return 5;
+	}
+	else if (ball.getBall().getGlobalBounds().intersects(player.getCol(6).getGlobalBounds()))
+	{
+		return 6;
+	}
+	else
+		return 0;
+}
+
+
 
 void Game::draw(sf::RenderWindow& window)
 {

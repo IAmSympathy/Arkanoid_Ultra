@@ -20,6 +20,7 @@ int main() {
 
 	ball.SetTexture();
 	ballShadow.SetTexture();
+	int ballCollision;
 
 	player.setTexture();
 	playerShadow.SetTexture();
@@ -45,19 +46,34 @@ int main() {
 		// Render
 		window.clear(Color::Black);
 
-		game.draw(window);
 
-		ball.move();
-		ballShadow.move(ball.getBall());
-		ballShadow.draw(window);
-		ball.draw(window);
 
+		//Actions du jeu
+		player.setIsDead(ball.GetIsUnderMap());
+
+		//Actions du joueur
 		player.move();
 		playerShadow.move(player.getPlayer());
 		player.idleAnimation();
-		playerShadow.draw(window);
-		player.draw(window);
 
+		//Actions de la balle
+		ballCollision = game.checkCollision(player, ball);
+		ball.checkCollision(ballCollision);
+		ball.move();
+
+		ballShadow.move(ball.getBall());
+
+		//Draw
+		game.draw(window);
+
+		if (player.GetIsDead() == false)
+		{
+			playerShadow.draw(window);
+			ballShadow.draw(window);
+			ball.draw(window);
+		}
+
+		player.draw(window);
 		game.drawBorder(window);
 
 		window.display();

@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
+#include "Player.h"
+#include "Ball.h"
 using namespace sf;		// Namespace pour les objets de la librairie SFML
 using namespace std;	// Namespace pour les objets de la librairie standard en C++
 
@@ -15,6 +17,8 @@ private:
 
 	sf::SoundBuffer _buffer;
 	sf::Sound _music;
+
+	bool _isDead;
 public:
 	Game();
 
@@ -23,6 +27,8 @@ public:
 	bool SetBackground(int level);
 	bool SetBorder();
 	bool SetMusic(int level);
+
+	int checkCollision(Player player, Ball ball);
 
 	void draw(sf::RenderWindow& window);
 	void drawBorder(sf::RenderWindow& window);

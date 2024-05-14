@@ -2,8 +2,15 @@
 
 Ball::Ball()
 {
+	_velocity.x = 1;
+	_velocity.y = 1;
+	_speed = 4;
+	_collision = 0;
+	_isUnderMap = false;
+
 	_ball.setPosition(960, 520);		// On définit sa position
-	_ball.setSize(Vector2f(16, 13));	// On définit ses dimensions
+	_ball.setOrigin(8, 6);
+	_ball.setSize(Vector2f(15, 12));	// On définit ses dimensions
 	_ball.setFillColor(Color::White);
 	_rectSprite = IntRect(0, 0, 16, 13);
 }
@@ -27,23 +34,92 @@ void Ball::move()
 {
 	Vector2f position;
 	position = _ball.getPosition();
-
-	_time = _clock.getElapsedTime(); // Prends le temps de l’horloge
-	if (_time.asMilliseconds() >= 10.0f)
+	if (_isUnderMap == false)
 	{
-		if (position.x < 521 || position.x > 1395 - 16) {
-			xVelocity *= -1;
-			bounce(1);
-		}
-
-		if (position.y < 100 || position.y > 1080 - 13)
+		if (!(_collision == 0))
 		{
-			yVelocity *= -1;
-			bounce(1);
+			if (position.y < 1015 + 13 - 6)
+			{
+				switch (_collision)
+				{
+				case 1:
+					setAngle(-0.85, -1);
+					break;
+				case 2:
+					setAngle(-0.5, -1);
+					break;
+				case 3:
+					setAngle(-0.25, -1);
+					break;
+				case 4:
+					setAngle(0.25, -1);
+					break;
+				case 5:
+					setAngle(0.5, -1);
+					break;
+				case 6:
+					setAngle(0.85, -1);
+					break;
+				}
+			}
+			else
+			{
+				switch (_collision)
+				{
+				case 1:
+					setAngle(-0.85, 1);
+					break;
+				case 2:
+					setAngle(-0.5, 1);
+					break;
+				case 3:
+					setAngle(-0.15, 1);
+					break;
+				case 4:
+					setAngle(0.15, 1);
+					break;
+				case 5:
+					setAngle(0.5, 1);
+					break;
+				case 6:
+					setAngle(0.85, 1);
+					break;
+				}
+			}
+
+			bounce(2);
+			_collision = 0;
 		}
 
-		_ball.setPosition(position.x + xVelocity, position.y + yVelocity);
-		_clock.restart(); // On remet l’horloge à 0
+		float norme = sqrt(_velocity.x * _velocity.x + _velocity.y * _velocity.y);
+		if (norme != 0) {
+			_velocity.x /= norme;
+			_velocity.y /= norme;
+		}
+
+		_time = _clock.getElapsedTime(); // Prends le temps de l’horloge
+		if (_time.asMilliseconds() >= 10.0f)
+		{
+			if (position.x < 521 + 8 || position.x > 1395 - 6) {
+				_velocity.x *= -1;
+				bounce(1);
+			}
+
+			if (position.y < 100 + 7)
+			{
+				_velocity.y *= -1;
+				bounce(1);
+			}
+
+			if (position.y > 1080 - 6)
+			{
+				_isUnderMap = true;
+			}
+
+			_ball.setPosition(position.x + _velocity.x * _speed, position.y + _velocity.y * _speed);
+			_clock.restart(); // On remet l’horloge à 0
+		}
+
 	}
 }
 
@@ -67,32 +143,50 @@ bool Ball::setSound(int bounceReason)
 	_sound.setBuffer(_buffer);
 }
 
+void Ball::setAngle(double xVelocity, double yVelocity)
+{
+	_velocity.x = xVelocity;
+	_velocity.y = yVelocity;
+}
+
+void Ball::SetIsUnderMap(isUnderMap)
+{
+	_isUnderMap = isUnderMap;
+}
+
 void Ball::bounce(int bounceReason)
 {
+
 	switch (bounceReason)
 	{
 	case 1:
-		if (!(xVelocity > 3.5 || yVelocity > 3.5))
-		{
-			if (xVelocity < 0)
-				xVelocity -= 0.01;
-			else
-				xVelocity += 0.01;
-
-			if (yVelocity < 0)
-				yVelocity += 0.01;
-			else
-				yVelocity -= 0.01;
-		}
 		setSound(1);
 		_sound.play();
 		break;
+	case 2:
+		setSound(2);
+		_sound.play();
+		break;
+	}
+	if (_speed < 10)
+	{
+		_speed += 0.05;
 	}
 
 
 }
 
+void Ball::checkCollision(int value)
+{
+	_collision = value;
+}
+
 void Ball::draw(sf::RenderWindow& window)
 {
 	window.draw(_ball);
+}
+
+bool Ball::GetIsUnderMap()
+{
+	return _isUnderMap;
 }

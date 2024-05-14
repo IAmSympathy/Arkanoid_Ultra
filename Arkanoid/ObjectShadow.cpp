@@ -12,6 +12,7 @@ bool ObjectShadow::SetTexture()
 	{
 		_shadow.setSize(Vector2f(16, 13));		// On définit ses dimensions
 		_rectSprite = IntRect(0, 0, 16, 13);
+		_shadow.setOrigin(8, 6);
 		_shadow.setTextureRect(_rectSprite);
 		if (!_texture.loadFromFile("Ressources/Sprites/Ball_S.png"))
 			return false;
@@ -20,6 +21,7 @@ bool ObjectShadow::SetTexture()
 	{
 		_shadow.setSize(Vector2f(100, 25));		// On définit ses dimensions
 		_rectSprite = IntRect(0, 0, 100, 25);
+		_shadow.setOrigin(50, 14);
 		_shadow.setTextureRect(_rectSprite);
 		if (!_texture.loadFromFile("Ressources/Sprites/Player_S.png"))
 			return false;

@@ -19,8 +19,11 @@ private:
 	sf::SoundBuffer _buffer;
 	sf::Sound _sound;
 
-	double xVelocity = 3;
-	double yVelocity = 3;
+	Vector2f _velocity;
+	float _speed;
+	int _collision;
+	bool _isUnderMap;
+
 public:
 	Ball();
 
@@ -29,6 +32,11 @@ public:
 
 	void move();
 	bool setSound(int bounceReason);
+	void setAngle(double xVelocity, double yVelocity);
+	void SetIsUnderMap(bool isUnderMap);
+
+	bool GetIsUnderMap();
+	void checkCollision(int value);
 	void bounce(int bounceReason);
 
 	void draw(sf::RenderWindow& window);
