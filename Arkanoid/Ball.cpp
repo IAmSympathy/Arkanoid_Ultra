@@ -7,12 +7,18 @@ Ball::Ball()
 	_speed = 4;
 	_collision = 0;
 	_isUnderMap = false;
+	_isDead = false;
 
+	_leftBorder = 0;
+	_rightBorder = 0;
+	_upBorder = 0;
+
+	_ball.scale(sizeMultiplier, sizeMultiplier);
 	_ball.setPosition(960, 520);		// On définit sa position
-	_ball.setOrigin(8, 6);
-	_ball.setSize(Vector2f(15, 12));	// On définit ses dimensions
+	_ball.setOrigin(_width / 2, _height / 2);
+	_ball.setSize(Vector2f(_width, _height));	// On définit ses dimensions
 	_ball.setFillColor(Color::White);
-	_rectSprite = IntRect(0, 0, 16, 13);
+	_rectSprite = IntRect(0, 0, _width, _height);
 }
 
 RectangleShape Ball::getBall()
@@ -24,41 +30,41 @@ bool Ball::SetTexture()
 {
 	_ball.setTextureRect(_rectSprite);
 
-	if (!_texture.loadFromFile("Ressources/Sprites/Ball.png"))
+	if (!_texture.loadFromFile("ArkanoidUltra_Data/Sprites/Ball.png"))
 		return false;
 
 	_ball.setTexture(&_texture);
 }
 
-void Ball::move()
+void Ball::Move()
 {
 	Vector2f position;
 	position = _ball.getPosition();
-	if (_isUnderMap == false)
+	if (_isDead == false)
 	{
 		if (!(_collision == 0))
 		{
-			if (position.y < 1015 + 13 - 6)
+			if (position.y < 1015 + _height/2)
 			{
 				switch (_collision)
 				{
 				case 1:
-					setAngle(-0.85, -1);
+					SetAngle(-0.85, -1);
 					break;
 				case 2:
-					setAngle(-0.5, -1);
+					SetAngle(-0.5, -1);
 					break;
 				case 3:
-					setAngle(-0.25, -1);
+					SetAngle(-0.15, -1);
 					break;
 				case 4:
-					setAngle(0.25, -1);
+					SetAngle(0.15, -1);
 					break;
 				case 5:
-					setAngle(0.5, -1);
+					SetAngle(0.5, -1);
 					break;
 				case 6:
-					setAngle(0.85, -1);
+					SetAngle(0.85, -1);
 					break;
 				}
 			}
@@ -67,27 +73,27 @@ void Ball::move()
 				switch (_collision)
 				{
 				case 1:
-					setAngle(-0.85, 1);
+					SetAngle(-0.85, 1);
 					break;
 				case 2:
-					setAngle(-0.5, 1);
+					SetAngle(-0.5, 1);
 					break;
 				case 3:
-					setAngle(-0.15, 1);
+					SetAngle(-0.15, 1);
 					break;
 				case 4:
-					setAngle(0.15, 1);
+					SetAngle(0.15, 1);
 					break;
 				case 5:
-					setAngle(0.5, 1);
+					SetAngle(0.5, 1);
 					break;
 				case 6:
-					setAngle(0.85, 1);
+					SetAngle(0.85, 1);
 					break;
 				}
 			}
 
-			bounce(2);
+			Bounce(2);
 			_collision = 0;
 		}
 
@@ -100,20 +106,21 @@ void Ball::move()
 		_time = _clock.getElapsedTime(); // Prends le temps de l’horloge
 		if (_time.asMilliseconds() >= 10.0f)
 		{
-			if (position.x < 521 + 8 || position.x > 1395 - 6) {
+			if (position.x < _leftBorder + _width * sizeMultiplier /2 || position.x > _rightBorder - _width * sizeMultiplier / 2) {
 				_velocity.x *= -1;
-				bounce(1);
+				Bounce(1);
 			}
 
-			if (position.y < 100 + 7)
+			if (position.y < _upBorder + _height*sizeMultiplier)
 			{
 				_velocity.y *= -1;
-				bounce(1);
+				Bounce(1);
 			}
 
-			if (position.y > 1080 - 6)
+			if (position.y > 1080 - _height*sizeMultiplier/2)
 			{
 				_isUnderMap = true;
+				_isDead = true;
 			}
 
 			_ball.setPosition(position.x + _velocity.x * _speed, position.y + _velocity.y * _speed);
@@ -123,27 +130,27 @@ void Ball::move()
 	}
 }
 
-bool Ball::setSound(int bounceReason)
+bool Ball::SetSound(int bounceReason)
 {
 	switch (bounceReason)
 	{
 	case 1:
-		if (!_buffer.loadFromFile("Ressources/Audio/Sound/BallWall.wav"))
+		if (!_buffer.loadFromFile("ArkanoidUltra_Data/Sounds/BallWall.wav"))
 			return false;
 		break;
 	case 2:
-		if (!_buffer.loadFromFile("Ressources/Audio/Sound/BallPlayer.wav"))
+		if (!_buffer.loadFromFile("ArkanoidUltra_Data/Sounds/BallPlayer.wav"))
 			return false;
 		break;
 	case 3:
-		if (!_buffer.loadFromFile("Ressources/Audio/Sound/BallBrick.wav"))
+		if (!_buffer.loadFromFile("ArkanoidUltra_Data/Sounds/BallBrick.wav"))
 			return false;
 		break;
 	}
 	_sound.setBuffer(_buffer);
 }
 
-void Ball::setAngle(double xVelocity, double yVelocity)
+void Ball::SetAngle(double xVelocity, double yVelocity)
 {
 	_velocity.x = xVelocity;
 	_velocity.y = yVelocity;
@@ -154,28 +161,44 @@ void Ball::SetIsUnderMap(bool isUnderMap)
 	_isUnderMap = isUnderMap;
 }
 
+void Ball::SetIsDead(bool isDead)
+{
+	_isDead = isDead;
+}
+
+void Ball::SetBorders(int leftBorder, int rightBorder, int upBorder)
+{
+	_leftBorder = leftBorder;
+	_rightBorder = rightBorder;
+	_upBorder = upBorder;
+}
 
 bool Ball::GetIsUnderMap()
 {
 	return _isUnderMap;
 }
 
-void Ball::checkCollision(int value)
+bool Ball::GetIsDead()
+{
+	return _isDead;
+}
+
+void Ball::CheckCollision(int value)
 {
 	_collision = value;
 }
 
-void Ball::bounce(int bounceReason)
+void Ball::Bounce(int bounceReason)
 {
 
 	switch (bounceReason)
 	{
 	case 1:
-		setSound(1);
+		SetSound(1);
 		_sound.play();
 		break;
 	case 2:
-		setSound(2);
+		SetSound(2);
 		_sound.play();
 		break;
 	}
@@ -187,7 +210,7 @@ void Ball::bounce(int bounceReason)
 
 
 }
-void Ball::draw(sf::RenderWindow& window)
+void Ball::Draw(sf::RenderWindow& window)
 {
 	window.draw(_ball);
 }

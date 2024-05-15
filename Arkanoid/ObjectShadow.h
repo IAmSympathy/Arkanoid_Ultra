@@ -18,10 +18,18 @@ private:
 	sf::RectangleShape _shadow;
 	sf::Texture _texture;
 	sf::IntRect _rectSprite;
+
+	const int _playerWidth = 32;
+	const int _playerHeight = 8;
+	const int _ballWidth = 5;
+	const int _ballHeight = 4;
+	const int sizeMultiplier = 4;
 public:
+	ObjectShadow();
 	ObjectShadow(std::string type);
 
 	bool SetTexture();
+	void SetType(std::string type);
 
 	void move(RectangleShape type);
 
