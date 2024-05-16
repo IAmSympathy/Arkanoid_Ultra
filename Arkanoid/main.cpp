@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "Brick.h"
 #include "Game.h"
 #include "Player.h"
 #include "Ball.h"
