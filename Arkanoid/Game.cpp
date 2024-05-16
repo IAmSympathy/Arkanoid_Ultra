@@ -42,13 +42,19 @@ void Game::StartLevel(int level)
 void Game::Play()
 {
 	//Vérification mort
-	if (_ball.GetIsUnderMap() == true)
-		_player.Die();
 	if (_player.GetPlayerStatus() != 0)
 	{
 		_ball.SetIsDead(true);
 		_ball.SetIsUnderMap(false);
 	}
+	if (_ball.GetIsUnderMap() == true)
+		_player.Die();
+
+	//Actions de la balle
+	_ballCollision = CheckCollision(_player, _ball);
+	_ball.CheckCollision(_ballCollision);
+	_ball.Move();
+	_ballShadow.move(_ball.getBall());
 
 	//Actions du joueur
 	_player.Move();
@@ -70,12 +76,6 @@ void Game::Play()
 		_player.SpawnAnimation();
 		break;
 	}
-
-	//Actions de la balle
-	_ballCollision = CheckCollision(_player, _ball);
-	_ball.CheckCollision(_ballCollision);
-	_ball.Move();
-	_ballShadow.move(_ball.getBall());
 }
 
 

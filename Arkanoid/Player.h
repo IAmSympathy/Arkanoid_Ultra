@@ -23,16 +23,15 @@ private:
 	sf::RectangleShape _player;
 	sf::Texture _texturePlayer;
 	sf::IntRect _rectSprite;
-	////Player's Crack sprite
+	//Player's Crack sprite
 	sf::RectangleShape _crackPlayer;
 	sf::Texture _crackTexturePlayer;
 	sf::IntRect _crackRectSprite;
-	////Player's Dead sprite
+	//Player's Dead sprite
 	sf::RectangleShape _deadPlayer;
 	sf::Texture _deadTexturePlayer;
 	sf::IntRect _deadRectSprite;
-
-	////Player's Dead sprite
+	//Player's Spawn sprite
 	sf::RectangleShape _spawnPlayer;
 	sf::Texture _spawnTexturePlayer;
 	sf::IntRect _spawnRectSprite;
@@ -58,6 +57,7 @@ public:
 	void Move();
 	void MoveCol(int value);
 	void Die();
+	void Revive();
 	
 	//Animations
 	void IdleAnimation();

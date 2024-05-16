@@ -122,11 +122,9 @@ void Ball::Move()
 				_isUnderMap = true;
 				_isDead = true;
 			}
-
 			_ball.setPosition(position.x + _velocity.x * _speed, position.y + _velocity.y * _speed);
 			_clock.restart(); // On remet l’horloge à 0
 		}
-
 	}
 }
 

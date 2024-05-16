@@ -18,22 +18,23 @@ Player::Player()
 	_player.setOrigin(_width / 2, _height / 2);
 	_rectSprite = IntRect(0, 0, _width, _height);
 
-	_crackPlayer.scale(4, 4);
+	_crackPlayer.scale(sizeMultiplier, sizeMultiplier);
 	_crackPlayer.setPosition(960, 1015);
 	_crackPlayer.setSize(Vector2f(0, 0));
 	_crackPlayer.setOrigin(_width / 2, _height / 2);
 	_crackRectSprite = IntRect(0, 0, _width, _height);
 
-	_deadPlayer.scale(4, 4);
+	_deadPlayer.scale(sizeMultiplier, sizeMultiplier);
 	_deadPlayer.setPosition(960, 1015);
 	_deadPlayer.setSize(Vector2f(0, 0));
 	_deadPlayer.setOrigin(24, 12);
 	_deadRectSprite = IntRect(0, 0, 48, 24);
 
+	_spawnPlayer.scale(sizeMultiplier, sizeMultiplier);
 	_spawnPlayer.setPosition(960, 1015);
-	_spawnPlayer.setSize(Vector2f(100, 24));
-	_spawnPlayer.setOrigin(50, 12);
-	_spawnRectSprite = IntRect(0, 0, 100, 24);
+	_spawnPlayer.setSize(Vector2f(_width, _height));
+	_spawnPlayer.setOrigin(_width / 2, _height / 2);
+	_spawnRectSprite = IntRect(0, 0, _width, _height);
 
 	//Define all the player's collisions
 	_col1.setPosition(957 - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier)/ 2);
@@ -136,6 +137,7 @@ void Player::CrackAnimation()
 		if (_crackRectSprite.top >= 24)
 		{
 			_crackRectSprite.top = 0;
+			_crackPlayer.setSize(Vector2f(0, 0));
 			_playerStatus = 2;
 		}
 		_crackPlayer.setTextureRect(_crackRectSprite);
@@ -157,6 +159,7 @@ void Player::DeathAnimation()
 		if (_deadRectSprite.top >= 96)
 		{
 			_deadRectSprite.top = 0;
+			_deadPlayer.setSize(Vector2f(0, 0));
 			_playerStatus = 3;
 		}
 		_deadPlayer.setTextureRect(_deadRectSprite);
@@ -166,15 +169,19 @@ void Player::DeathAnimation()
 
 void Player::SpawnAnimation()
 {
+	_spawnPlayer.setSize(Vector2f(_width, _height));
+	Vector2f positionPlayer = _player.getPosition();
+	_spawnPlayer.setPosition(positionPlayer.x, positionPlayer.y);
+
+	_spawnPlayer.setSize(Vector2f(_width, _height));
 	_time = _clockSprite.getElapsedTime();
 	if (_time.asMilliseconds() >= 150.0f) 
 	{
 		_spawnRectSprite.left = 0;
-		_spawnRectSprite.top += 24;
-		if (_spawnRectSprite.top >= 300)
+		_spawnRectSprite.top += 8;
+		if (_spawnRectSprite.top >= 40)
 		{
 			_spawnRectSprite.top = 0;
-			_playerStatus = 1;
 		}
 		_spawnPlayer.setTextureRect(_spawnRectSprite);
 		_clockSprite.restart();
@@ -244,14 +251,16 @@ void Player::Draw(sf::RenderWindow& window)
 	case 2:
 		window.draw(_deadPlayer);
 		break;
+	case 3:
+		window.draw(_spawnPlayer);
+		break;
 	}
-
-	window.draw(_col1);
-	window.draw(_col2);
-	window.draw(_col3);
-	window.draw(_col4);
-	window.draw(_col5);
-	window.draw(_col6);
+	//window.draw(_col1);
+	//window.draw(_col2);
+	//window.draw(_col3);
+	//window.draw(_col4);
+	//window.draw(_col5);
+	//window.draw(_col6);
 }
 
 void Player::Move()
