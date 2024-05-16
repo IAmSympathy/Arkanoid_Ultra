@@ -246,12 +246,12 @@ void Player::Draw(sf::RenderWindow& window)
 		break;
 	}
 
-	//window.draw(_col1);
-	//window.draw(_col2);
-	//window.draw(_col3);
-	//window.draw(_col4);
-	//window.draw(_col5);
-	//window.draw(_col6);
+	window.draw(_col1);
+	window.draw(_col2);
+	window.draw(_col3);
+	window.draw(_col4);
+	window.draw(_col5);
+	window.draw(_col6);
 }
 
 void Player::Move()

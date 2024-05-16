@@ -84,7 +84,7 @@ bool Game::SetBackground(int level)
 	switch (level)
 	{
 	case 1:
-		if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/LevelBG1.png"))
+		if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBG1.png"))
 			return false;
 	}
 	_background.setTexture(&_textureBackground);
@@ -92,15 +92,15 @@ bool Game::SetBackground(int level)
 
 bool Game::SetBorder()
 {
-	if (!_textureBorder.loadFromFile("ArkanoidUltra_Data/Sprites/LevelBorder.png"))
+	if (!_textureBorder.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder.png"))
 		return false;
 	_border.setTexture(&_textureBorder);
 
-	if (!_textureBorderS.loadFromFile("ArkanoidUltra_Data/Sprites/LevelBorder_S.png"))
+	if (!_textureBorderS.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder_S.png"))
 		return false;
 	_borderS.setTexture(&_textureBorderS);
 
-	if (!_textureBorderBG.loadFromFile("ArkanoidUltra_Data/Sprites/LevelBorder_BG.png"))
+	if (!_textureBorderBG.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder_BG.png"))
 		return false;
 	_borderBG.setTexture(&_textureBorderBG);
 
