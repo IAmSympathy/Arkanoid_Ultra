@@ -46,9 +46,9 @@ void ObjectShadow::draw(sf::RenderWindow& window)
 	window.draw(_shadow);
 }
 
-void ObjectShadow::move(RectangleShape player)
+void ObjectShadow::move(RectangleShape object)
 {
-	Vector2f position = player.getPosition();
+	Vector2f position = object.getPosition();
 	_time = _clock.getElapsedTime();
 	if (_time.asMilliseconds() >= 10.0f) 
 	{
