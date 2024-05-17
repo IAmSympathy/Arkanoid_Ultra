@@ -5,8 +5,9 @@ using namespace std;
 Player::Player()
 {
 	//Define the player and its sprite
+	_isSpawned = false;
 	_lives = 3;
-	_playerStatus = 0;
+	_State = SPAWNING;
 
 	_leftBorder = 0;
 	_rightBorder = 0;
@@ -14,21 +15,21 @@ Player::Player()
 
 	_player.scale(sizeMultiplier, sizeMultiplier);
 	_player.setPosition(960, 1015);
-	_player.setSize(Vector2f(_width, _height));
+	_player.setSize(Vector2f(0, 0));
 	_player.setOrigin(_width / 2, _height / 2);
 	_rectSprite = IntRect(0, 0, _width, _height);
 
-	_crackPlayer.scale(sizeMultiplier, sizeMultiplier);
-	_crackPlayer.setPosition(960, 1015);
-	_crackPlayer.setSize(Vector2f(0, 0));
-	_crackPlayer.setOrigin(_width / 2, _height / 2);
-	_crackRectSprite = IntRect(0, 0, _width, _height);
+	_diePlayer.scale(sizeMultiplier, sizeMultiplier);
+	_diePlayer.setPosition(960, 1015);
+	_diePlayer.setSize(Vector2f(0, 0));
+	_diePlayer.setOrigin(_width / 2, _height / 2);
+	_dieRectSprite = IntRect(0, 0, _width, _height);
 
-	_deadPlayer.scale(sizeMultiplier, sizeMultiplier);
-	_deadPlayer.setPosition(960, 1015);
-	_deadPlayer.setSize(Vector2f(0, 0));
-	_deadPlayer.setOrigin(24, 12);
-	_deadRectSprite = IntRect(0, 0, 48, 24);
+	_explodePlayer.scale(sizeMultiplier, sizeMultiplier);
+	_explodePlayer.setPosition(960, 1015);
+	_explodePlayer.setSize(Vector2f(0, 0));
+	_explodePlayer.setOrigin(24, 12);
+	_explodeRectSprite = IntRect(0, 0, 48, 24);
 
 	_spawnPlayer.scale(sizeMultiplier, sizeMultiplier);
 	_spawnPlayer.setPosition(960, 1015);
@@ -69,15 +70,15 @@ bool Player::SetTexture()
 		return false;
 	_player.setTexture(&_texturePlayer);
 
-	_crackPlayer.setTextureRect(_crackRectSprite);
-	if (!_crackTexturePlayer.loadFromFile("ArkanoidUltra_Data/Sprites/PlayerCrack.png"))
+	_diePlayer.setTextureRect(_dieRectSprite);
+	if (!_dieTexturePlayer.loadFromFile("ArkanoidUltra_Data/Sprites/PlayerCrack.png"))
 		return false;
-	_crackPlayer.setTexture(&_crackTexturePlayer);
+	_diePlayer.setTexture(&_dieTexturePlayer);
 
-	_deadPlayer.setTextureRect(_deadRectSprite);
-	if (!_deadTexturePlayer.loadFromFile("ArkanoidUltra_Data/Sprites/PlayerDead.png"))
+	_explodePlayer.setTextureRect(_explodeRectSprite);
+	if (!_explodeTexturePlayer.loadFromFile("ArkanoidUltra_Data/Sprites/PlayerDead.png"))
 		return false;
-	_deadPlayer.setTexture(&_deadTexturePlayer);
+	_explodePlayer.setTexture(&_explodeTexturePlayer);
 
 	_spawnPlayer.setTextureRect(_spawnRectSprite);
 	if (!_spawnTexturePlayer.loadFromFile("ArkanoidUltra_Data/Sprites/PlayerSpawn.png"))
@@ -91,10 +92,16 @@ bool Player::SetSound(int sound)
 	switch (sound)
 	{
 	case 1:
-		if (!_buffer.loadFromFile("ArkanoidUltra_Data/Sounds/PlayerDeath.wav"))
+		if (!_buffer.loadFromFile("ArkanoidUltra_Data/Sounds/PlayerSpawn.wav"))
+		{
 			return false;
+		}
 		break;
-
+	case 2:
+		if (!_buffer.loadFromFile("ArkanoidUltra_Data/Sounds/PlayerDeath.wav"))
+		{
+			return false;
+		}
 	}
 	_sound.setBuffer(_buffer);
 }
@@ -108,7 +115,7 @@ void Player::SetBorders(int leftBorder, int rightBorder, int upBorder)
 
 void Player::IdleAnimation()
 {
-	_time = _clockSprite.getElapsedTime();
+	_time = _clock.getElapsedTime();
 	//Idle animation - if the animation is over it will repeat
 	if (_time.asMilliseconds() >= 100.0f) 
 	{
@@ -119,51 +126,52 @@ void Player::IdleAnimation()
 			_rectSprite.top = 0;
 		}
 		_player.setTextureRect(_rectSprite);
-		_clockSprite.restart();
+		_clock.restart();
 	}
 }
 
-void Player::CrackAnimation()
+void Player::DieAnimation()
 {
-	_crackPlayer.setSize(Vector2f(_width, _height));
+	_diePlayer.setSize(Vector2f(_width, _height));
 	Vector2f positionPlayer = _player.getPosition();
-	_crackPlayer.setPosition(positionPlayer.x, positionPlayer.y);
+	_diePlayer.setPosition(positionPlayer.x, positionPlayer.y);
 
-	_time = _clockSprite.getElapsedTime();
-	if (_time.asMilliseconds() >= 150.0f)
+	_time = _clock.getElapsedTime();
+	if (_time.asMilliseconds() >= 100.0f)
 	{
-		_crackRectSprite.left = 0;
-		_crackRectSprite.top += _height;
-		if (_crackRectSprite.top >= 24)
+		_dieRectSprite.left = 0;
+		_dieRectSprite.top += _height;
+		if (_dieRectSprite.top >= 24)
 		{
-			_crackRectSprite.top = 0;
-			_crackPlayer.setSize(Vector2f(0, 0));
-			_playerStatus = 2;
+			_dieRectSprite.top = 0;
+			_diePlayer.setSize(Vector2f(0, 0));
+			_State = EXPLODING;
 		}
-		_crackPlayer.setTextureRect(_crackRectSprite);
-		_clockSprite.restart();
+		_diePlayer.setTextureRect(_dieRectSprite);
+		_clock.restart();
 	}
 }
 
-void Player::DeathAnimation()
+void Player::ExplodeAnimation()
 {
-	_deadPlayer.setSize(Vector2f(48, 24));
+	_explodePlayer.setSize(Vector2f(48, 24));
 	Vector2f positionPlayer = _player.getPosition();
-	_deadPlayer.setPosition(positionPlayer.x, positionPlayer.y);
+	_explodePlayer.setPosition(positionPlayer.x, positionPlayer.y);
 
-	_time = _clockSprite.getElapsedTime();
-	if (_time.asMilliseconds() >= 150.0f) 
+	_time = _clock.getElapsedTime();
+	if (_time.asMilliseconds() >= 100.0f) 
 	{
-		_deadRectSprite.left = 0;
-		_deadRectSprite.top += 24;
-		if (_deadRectSprite.top >= 96)
+		_explodeRectSprite.left = 0;
+		_explodeRectSprite.top += 24;
+		if (_explodeRectSprite.top >= 96)
 		{
-			_deadRectSprite.top = 0;
-			_deadPlayer.setSize(Vector2f(0, 0));
-			_playerStatus = 3;
+			_explodeRectSprite.top = 0;
+			_explodePlayer.setSize(Vector2f(0, 0));
+			_player.setPosition(960, 1015);
+			_State = SPAWNING;
 		}
-		_deadPlayer.setTextureRect(_deadRectSprite);
-		_clockSprite.restart();
+		_explodePlayer.setTextureRect(_explodeRectSprite);
+		_clock.restart();
 	}
 }
 
@@ -174,28 +182,49 @@ void Player::SpawnAnimation()
 	_spawnPlayer.setPosition(positionPlayer.x, positionPlayer.y);
 
 	_spawnPlayer.setSize(Vector2f(_width, _height));
-	_time = _clockSprite.getElapsedTime();
-	if (_time.asMilliseconds() >= 150.0f) 
+	_time = _clock.getElapsedTime();
+	if (_time.asMilliseconds() >= 100.0f) 
 	{
 		_spawnRectSprite.left = 0;
 		_spawnRectSprite.top += 8;
 		if (_spawnRectSprite.top >= 40)
 		{
+			_spawnPlayer.setSize(Vector2f(0, 0));
 			_spawnRectSprite.top = 0;
+			_isSpawned = true;
 		}
 		_spawnPlayer.setTextureRect(_spawnRectSprite);
-		_clockSprite.restart();
+		_clock.restart();
 	}
 }
 
 void Player::Die()
 {
-	//Death consequences
 	_lives--;
-	_playerStatus = 1;
+	_State = DYING;
+	PlaySound(2);
+}
 
-	SetSound(1);
-	_sound.play();
+void Player::Revive()
+{
+	_isSpawned = false;
+	_player.setSize(Vector2f(_width, _height));
+	_State = ALIVE;
+}
+
+void Player::PlaySound(int sound)
+{
+	switch (sound)
+	{
+	case 1:
+		SetSound(1);
+		_sound.play();
+		break;
+	case 2:
+		SetSound(2);
+		_sound.play();
+		break;
+	}
 }
 
 sf::RectangleShape Player::GetPlayer()
@@ -205,12 +234,17 @@ sf::RectangleShape Player::GetPlayer()
 
 int Player::GetPlayerStatus()
 {
-	return _playerStatus;
+	return _State;
 }
 
-int Player::GetWidth()
+int Player::GetLive()
 {
-	return 0;
+	return _lives;
+}
+
+bool Player::GetIsSpawned()
+{
+	return _isSpawned;
 }
 
 sf::RectangleShape Player::GetCol(int value)
@@ -240,19 +274,19 @@ sf::RectangleShape Player::GetCol(int value)
 
 void Player::Draw(sf::RenderWindow& window)
 {
-	switch (_playerStatus)
+	switch (_State)
 	{
-	case 0:
+	case SPAWNING:
+		window.draw(_spawnPlayer);
+		break;
+	case ALIVE:
 		window.draw(_player);
 		break;
-	case 1:
-		window.draw(_crackPlayer);
+	case DYING:
+		window.draw(_diePlayer);
 		break;
-	case 2:
-		window.draw(_deadPlayer);
-		break;
-	case 3:
-		window.draw(_spawnPlayer);
+	case EXPLODING:
+		window.draw(_explodePlayer);
 		break;
 	}
 	//window.draw(_col1);
@@ -269,7 +303,7 @@ void Player::Move()
 	Vector2f nextPosition;
 
 	_time = _clock.getElapsedTime();
-	if (_playerStatus == 0)
+	if (_State == ALIVE)
 	{
 		if (_time.asMilliseconds() >= 10.0f) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))	//If the 'A' key is pressed, makes the player move by 10 units to the left
@@ -298,10 +332,6 @@ void Player::Move()
 
 			}
 			_clock.restart();
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
-		{
-			Die();
 		}
 	}
 }

@@ -1,10 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Brick.h"
+#include "ObjectShadow.h"
 #include "Game.h"
 #include "Player.h"
 #include "Ball.h"
-#include "ObjectShadow.h"
+#include "Interface.h"
 using namespace sf;		
 using namespace std;	
 
@@ -15,6 +16,8 @@ int main() {
 	window.setFramerateLimit(144);
 
 	Game game;
+	Interface interface;
+	interface.Initialize();
 	game.StartLevel(1);
 
 	//Main loop
@@ -33,7 +36,9 @@ int main() {
 
 		//Game logic
 		game.Play();
+		interface.updateScore(game.GetScore(),game.GetHighScore());
 		game.Draw(window);
+		interface.DrawInGameStats(window);
 
 		window.display();
 	}

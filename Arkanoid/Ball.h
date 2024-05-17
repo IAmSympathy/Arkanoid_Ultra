@@ -18,7 +18,8 @@ private:
 	//Checks
 	int _collision;
 	bool _isUnderMap;
-	bool _isDead;
+	int _State;
+	enum ballStates { THROW, ALIVE, DEAD };
 
 	//Ball's sprite
 	sf::RectangleShape _ball;
@@ -43,16 +44,15 @@ public:
 	//Actions
 	void Move();
 	void Bounce(int bounceReason);
+	void Revive();
 
 	//Getters
 	RectangleShape getBall();
-	bool GetIsUnderMap();
-	bool GetIsDead();
+	int GetState();
 
 	//Setters
 	void SetAngle(double xVelocity, double yVelocity);
-	void SetIsUnderMap(bool isUnderMap);
-	void SetIsDead(bool isDead);
+	void SetState(int State);
 	void SetBorders(int leftBorder, int rightBorder, int upBorder);
 
 	bool SetTexture();

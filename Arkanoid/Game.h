@@ -11,9 +11,12 @@ using namespace std;
 class Game
 {
 private:
-	//Actors
+	//Attributes
 	Player _player;
 	Ball _ball;
+	int _lives;
+	int _score;
+	int _highscore;
 
 	//Actors' Shadows
 	ObjectShadow _playerShadow;
@@ -22,6 +25,9 @@ private:
 	//Checks
 	int _ballCollision;
 	bool _isDead;
+	bool _SpawnSoundOnce;
+	enum playerStates { SPAWNING, ALIVE, DYING, EXPLODING };
+	enum borderSize { SMALL, NORMAL, LARGE };
 
 	//Textures
 	sf::Texture _textureBackground;
@@ -47,10 +53,13 @@ public:
 	void StartLevel(int level);
 	void Play();
 
+	//Getters
+	int GetScore();
+	int GetHighScore();
 	//Setters
-	bool SetBackground(int level);
-	bool SetBorder();
-	bool SetMusic(int level);
+	bool SetBackground(int section);
+	bool SetBorder(int size);
+	bool SetMusic(int section);
 
 	//Others
 	int CheckCollision(Player player, Ball ball);

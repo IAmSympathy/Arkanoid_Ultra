@@ -6,8 +6,8 @@ Ball::Ball()
 	_velocity.y = 1;
 	_speed = 4;
 	_collision = 0;
-	_isUnderMap = false;
-	_isDead = false;
+	_isUnderMap = true;
+	_State = DEAD;
 
 	_leftBorder = 0;
 	_rightBorder = 0;
@@ -40,7 +40,7 @@ void Ball::Move()
 {
 	Vector2f position;
 	position = _ball.getPosition();
-	if (_isDead == false)
+	if (!(_State == DEAD || _State == THROW))
 	{
 		if (!(_collision == 0))
 		{
@@ -117,10 +117,9 @@ void Ball::Move()
 				Bounce(1);
 			}
 
-			if (position.y > 1080 - _height*sizeMultiplier/2)
+			if (position.y > 1080 + _height*sizeMultiplier/2)
 			{
-				_isUnderMap = true;
-				_isDead = true;
+				_State = DEAD;
 			}
 			_ball.setPosition(position.x + _velocity.x * _speed, position.y + _velocity.y * _speed);
 			_clock.restart(); // On remet l’horloge à 0
@@ -154,14 +153,9 @@ void Ball::SetAngle(double xVelocity, double yVelocity)
 	_velocity.y = yVelocity;
 }
 
-void Ball::SetIsUnderMap(bool isUnderMap)
+void Ball::SetState(int State)
 {
-	_isUnderMap = isUnderMap;
-}
-
-void Ball::SetIsDead(bool isDead)
-{
-	_isDead = isDead;
+	_State = State;
 }
 
 void Ball::SetBorders(int leftBorder, int rightBorder, int upBorder)
@@ -171,14 +165,9 @@ void Ball::SetBorders(int leftBorder, int rightBorder, int upBorder)
 	_upBorder = upBorder;
 }
 
-bool Ball::GetIsUnderMap()
+int Ball::GetState()
 {
-	return _isUnderMap;
-}
-
-bool Ball::GetIsDead()
-{
-	return _isDead;
+	return _State;
 }
 
 void Ball::CheckCollision(int value)
@@ -208,8 +197,16 @@ void Ball::Bounce(int bounceReason)
 
 
 }
+void Ball::Revive()
+{
+	_State = ALIVE;
+	_ball.setPosition(960, 520);
+	_velocity.x = 1;
+	_velocity.y = 1;
+}
 void Ball::Draw(sf::RenderWindow& window)
 {
+	if(_State != DEAD)
 	window.draw(_ball);
 }
 

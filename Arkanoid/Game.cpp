@@ -2,15 +2,23 @@
 
 Game::Game()
 {
+	_score = 999999;
+	_highscore = 999999;
+	//Checks
 	_ballCollision = 0;
 	_isDead = false;
+	_SpawnSoundOnce = false;
+
+	//Shadows
 	_playerShadow.SetType("Player");
 	_ballShadow.SetType("Ball");
 
+	//Collisions
 	_leftBorder = 0;
 	_rightBorder = 0;
 	_upBorder = 0;
 
+	//Decorations
 	_background.setPosition(0, 0);		// On définit sa position
 	_background.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
 	_border.setPosition(0, 0);		// On définit sa position
@@ -28,7 +36,7 @@ void Game::StartLevel(int level)
 	_music.play();
 
 	SetBackground(level);
-	SetBorder();
+	SetBorder(NORMAL);
 
 	_ball.SetTexture();
 	_ballShadow.SetTexture();
@@ -41,13 +49,14 @@ void Game::StartLevel(int level)
 
 void Game::Play()
 {
-	//Vérification mort
-	if (_player.GetPlayerStatus() != 0)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
 	{
-		_ball.SetIsDead(true);
-		_ball.SetIsUnderMap(false);
+		_score++;
 	}
-	if (_ball.GetIsUnderMap() == true)
+	//Vérification mort
+	if (_player.GetPlayerStatus() != ALIVE)
+		_ball.SetState(2);
+	else if (_ball.GetState() == 2)
 		_player.Die();
 
 	//Actions de la balle
@@ -63,25 +72,49 @@ void Game::Play()
 	int playerStatus = _player.GetPlayerStatus();
 	switch (playerStatus)
 	{
-	case 0:
+	case SPAWNING:
+		if (_player.GetLive() > 0)
+		{
+			if (_SpawnSoundOnce == false)
+			{
+				_player.PlaySound(1);
+				_SpawnSoundOnce = true;
+			}
+
+			_player.SpawnAnimation();
+				if (_player.GetIsSpawned() == true)
+				{
+					_player.Revive();
+					_ball.Revive();
+				}
+		}
+		break;
+	case ALIVE:
 		_player.IdleAnimation();
 		break;
-	case 1:
-		_player.CrackAnimation();
+	case DYING:
+		_SpawnSoundOnce = false;
+		_player.DieAnimation();
 		break;
-	case 2:
-		_player.DeathAnimation();
-		break;
-	case 3:
-		_player.SpawnAnimation();
+	case EXPLODING:
+		_player.ExplodeAnimation();
 		break;
 	}
 }
 
-
-bool Game::SetBackground(int level)
+int Game::GetScore()
 {
-	switch (level)
+	return _score;
+}
+
+int Game::GetHighScore()
+{
+	return _highscore;
+}
+
+bool Game::SetBackground(int section)
+{
+	switch (section)
 	{
 	case 1:
 		if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBG1.png"))
@@ -90,28 +123,32 @@ bool Game::SetBackground(int level)
 	_background.setTexture(&_textureBackground);
 }
 
-bool Game::SetBorder()
+bool Game::SetBorder(int size)
 {
-	if (!_textureBorder.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder.png"))
-		return false;
-	_border.setTexture(&_textureBorder);
+	switch (size)
+	{
+	case NORMAL:
+		if (!_textureBorder.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder.png"))
+			return false;
+		_border.setTexture(&_textureBorder);
 
-	if (!_textureBorderS.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder_S.png"))
-		return false;
-	_borderS.setTexture(&_textureBorderS);
+		if (!_textureBorderS.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder_S.png"))
+			return false;
+		_borderS.setTexture(&_textureBorderS);
 
-	if (!_textureBorderBG.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder_BG.png"))
-		return false;
-	_borderBG.setTexture(&_textureBorderBG);
+		if (!_textureBorderBG.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder_BG.png"))
+			return false;
+		_borderBG.setTexture(&_textureBorderBG);
 
-	_leftBorder = 544;
-	_rightBorder = 1372;
-	_upBorder = 152;
+		_leftBorder = 544;
+		_rightBorder = 1372;
+		_upBorder = 152;
+	}
 }
 
-bool Game::SetMusic(int level)
+bool Game::SetMusic(int section)
 {
-	switch (level)
+	switch (section)
 	{
 	case 1:
 		if (!_buffer.loadFromFile("ArkanoidUltra_Data/Musics/Level1.wav"))
@@ -156,13 +193,12 @@ void Game::Draw(sf::RenderWindow& window)
 	window.draw(_background);
 	window.draw(_borderBG);
 	window.draw(_borderS);
-	if (_player.GetPlayerStatus() == 0)
+	if (_player.GetPlayerStatus() == ALIVE)
 	{
 		_playerShadow.draw(window);
 		_ballShadow.draw(window);
 		_ball.Draw(window);
 	}
-
 	_player.Draw(window);
 	window.draw(_border);
 }
