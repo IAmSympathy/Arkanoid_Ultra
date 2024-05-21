@@ -36,7 +36,7 @@ int main() {
 
 		//Game logic
 		game.Play();
-		interface.updateStats(game.GetScore(),game.GetHighScore(), game.GetLives());
+		interface.updateStats(game.GetScore(),game.GetHighScore(), game.GetLives(), game.GetLevel());
 		game.Draw(window);
 		interface.DrawInGameStats(window);
 

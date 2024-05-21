@@ -17,6 +17,7 @@ private:
 	int _lives;
 	int _score;
 	int _highscore;
+	int _level;
 
 	//Actors' Shadows
 	ObjectShadow _playerShadow;
@@ -57,6 +58,7 @@ public:
 	int GetLives();
 	int GetScore();
 	int GetHighScore();
+	int GetLevel();
 	//Setters
 	bool SetBackground(int section);
 	bool SetBorder(int size);

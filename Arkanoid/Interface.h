@@ -24,6 +24,19 @@ private:
 	sf::Text _scoreText;
 	sf::Text _highscore;
 	sf::Text _highscoreText;
+	sf::Text _level;
+	sf::Text _levelText;
+	///Shadow
+	sf::RectangleShape _SliveIcon;
+	sf::Texture _SliveTexture;
+	sf::Text _SlivesText;
+	sf::Text _Slives;
+	sf::Text _Sscore;
+	sf::Text _SscoreText;
+	sf::Text _Shighscore;
+	sf::Text _ShighscoreText;
+	sf::Text _Slevel;
+	sf::Text _SlevelText;
 
 public:
 	//Constructor
@@ -36,7 +49,7 @@ public:
 	int ChangeOption(sf::Event& event);
 	void ConfirmOption(sf::RenderWindow& window, int option);
 	//In-Game
-	void updateStats(int scoreValue, int highscoreValue, int lives);
+	void updateStats(int scoreValue, int highscoreValue, int lives, int level);
 
 	//Load
 	bool loadLogo();

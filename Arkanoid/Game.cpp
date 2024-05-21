@@ -2,9 +2,10 @@
 
 Game::Game()
 {
+	_level = 1;
 	_lives = 3;
-	_score = 9888999;
-	_highscore = 9888999;
+	_score = 0;
+	_highscore = 0;
 	//Checks
 	_ballCollision = 0;
 	_isDead = false;
@@ -116,6 +117,12 @@ int Game::GetScore()
 int Game::GetHighScore()
 {
 	return _highscore;
+}
+
+
+int Game::GetLevel()
+{
+	return _level;
 }
 
 bool Game::SetBackground(int section)
