@@ -54,6 +54,7 @@ public:
 	void Play();
 
 	//Getters
+	int GetLives();
 	int GetScore();
 	int GetHighScore();
 	//Setters

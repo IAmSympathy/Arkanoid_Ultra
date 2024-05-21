@@ -2,8 +2,9 @@
 
 Game::Game()
 {
-	_score = 999999;
-	_highscore = 999999;
+	_lives = 3;
+	_score = 9888999;
+	_highscore = 9888999;
 	//Checks
 	_ballCollision = 0;
 	_isDead = false;
@@ -100,6 +101,11 @@ void Game::Play()
 		_player.ExplodeAnimation();
 		break;
 	}
+}
+
+int Game::GetLives()
+{
+	return _lives;
 }
 
 int Game::GetScore()

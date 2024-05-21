@@ -16,10 +16,14 @@ private:
 	sf::Text _optionExit;
 
 	//In-Game Stats
-	sf::RectangleShape _live;
+	sf::RectangleShape _liveIcon;
 	sf::Texture _liveTexture;
+	sf::Text _livesText;
+	sf::Text _lives;
 	sf::Text _score;
+	sf::Text _scoreText;
 	sf::Text _highscore;
+	sf::Text _highscoreText;
 
 public:
 	//Constructor
@@ -32,7 +36,7 @@ public:
 	int ChangeOption(sf::Event& event);
 	void ConfirmOption(sf::RenderWindow& window, int option);
 	//In-Game
-	void updateScore(int scoreValue, int highscoreValue);
+	void updateStats(int scoreValue, int highscoreValue, int lives);
 
 	//Load
 	bool loadLogo();
