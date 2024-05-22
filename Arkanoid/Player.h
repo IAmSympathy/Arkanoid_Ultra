@@ -16,10 +16,10 @@ private:
 
 	//Checks
 	bool _isSpawned;
-	enum playerStates{SPAWNING, ALIVE, DYING, EXPLODING };
-	int _State ;// 0=Alive, 1=Crack, 2=Dead 3=Revive
+	enum playerStates{ SPAWNING, ALIVE, DYING, EXPLODING, THROW };
+	int _State;
 
-	//Player's sprite
+	//Player's sprite*
 	sf::RectangleShape _player;
 	sf::Texture _texturePlayer;
 	sf::IntRect _rectSprite;
@@ -37,12 +37,7 @@ private:
 	sf::IntRect _spawnRectSprite;
 
 	//Collisions
-	sf::RectangleShape _col1;
-	sf::RectangleShape _col2;
-	sf::RectangleShape _col3;
-	sf::RectangleShape _col4;
-	sf::RectangleShape _col5;
-	sf::RectangleShape _col6;
+	sf::RectangleShape _hitbox;
 	int _leftBorder, _rightBorder, _upBorder;
 
 	//Audio
@@ -77,7 +72,7 @@ public:
 
 	//Getters
 	sf::RectangleShape GetPlayer();
-	sf::RectangleShape GetCol(int value);
+	sf::RectangleShape GetHitbox();
 	int GetPlayerStatus();
 	int GetLive();
 	bool GetIsSpawned();

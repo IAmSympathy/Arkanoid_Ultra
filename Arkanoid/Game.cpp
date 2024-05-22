@@ -1,11 +1,10 @@
 #include "Game.h"
-
 Game::Game()
 {
 	_level = 1;
 	_lives = 3;
 	_score = 0;
-	_highscore = 0;
+	_highscore = 10000;
 	//Checks
 	_ballCollision = 0;
 	_isDead = false;
@@ -62,14 +61,16 @@ void Game::Play()
 		_player.Die();
 
 	//Actions de la balle
-	_ballCollision = CheckCollision(_player, _ball);
-	_ball.CheckCollision(_ballCollision);
+	_ball.CheckCollision(CheckCollision(_player, _ball));
 	_ball.Move();
 	_ballShadow.move(_ball.getBall());
 
 	//Actions du joueur
 	_player.Move();
 	_playerShadow.move(_player.GetPlayer());
+	if (_ball.GetState() == 0)
+		_ball.MoveThrow(_player.GetPlayer());
+	checkLives(_player);
 
 	int playerStatus = _player.GetPlayerStatus();
 	switch (playerStatus)
@@ -118,7 +119,6 @@ int Game::GetHighScore()
 {
 	return _highscore;
 }
-
 
 int Game::GetLevel()
 {
@@ -171,34 +171,29 @@ bool Game::SetMusic(int section)
 	_music.setBuffer(_buffer);
 }
 
-int Game::CheckCollision(Player player, Ball ball)
+void Game::checkLives(Player &player)
 {
-	if (ball.getBall().getGlobalBounds().intersects(player.GetCol(1).getGlobalBounds()))
+	_lives = player.GetLive();
+}
+
+double Game::CheckCollision(Player player, Ball ball)
+{
+	Vector2f playerPosition = _player.GetPlayer().getPosition();
+	Vector2f ballPosition = _ball.getBall().getPosition();
+	if(ballPosition.y - 2 * 4 )
+	if (_ball.getBall().getGlobalBounds().intersects(_player.GetHitbox().getGlobalBounds()))
 	{
-		return 1;
-	}
-	else if (ball.getBall().getGlobalBounds().intersects(player.GetCol(2).getGlobalBounds()))
-	{
-		return 2;
-	}
-	else if (ball.getBall().getGlobalBounds().intersects(player.GetCol(3).getGlobalBounds()))
-	{
-		return 3;
-	}
-	else if (ball.getBall().getGlobalBounds().intersects(player.GetCol(4).getGlobalBounds()))
-	{
-		return 4;
-	}
-	else if (ball.getBall().getGlobalBounds().intersects(player.GetCol(5).getGlobalBounds()))
-	{
-		return 5;
-	}
-	else if (ball.getBall().getGlobalBounds().intersects(player.GetCol(6).getGlobalBounds()))
-	{
-		return 6;
+		//Calcul de la différence entre les positions
+		double dx = ballPosition.x - playerPosition.x;
+		double dy = ballPosition.y - 2*4 - playerPosition.y;
+		//Calcul l'angle
+		double theta = atan2(dy, dx) * 180.0 / M_PI;
+		if (theta < 0)
+			theta *= -1;
+		return theta;
 	}
 	else
-		return 0;
+		return -6969;
 }
 
 void Game::Draw(sf::RenderWindow& window)

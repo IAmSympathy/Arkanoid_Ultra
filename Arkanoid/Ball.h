@@ -40,9 +40,10 @@ private:
 public:
 	//Constructors
 	Ball();
-
+	~Ball();
 	//Actions
 	void Move();
+	void MoveThrow(RectangleShape player);
 	void Bounce(int bounceReason);
 	void Revive();
 
@@ -59,7 +60,7 @@ public:
 	bool SetSound(int bounceReason);
 
 	//Others
-	void CheckCollision(int value);
+	void CheckCollision(double value);
 	void Draw(sf::RenderWindow& window);
 };
 

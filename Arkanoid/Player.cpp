@@ -38,29 +38,9 @@ Player::Player()
 	_spawnRectSprite = IntRect(0, 0, _width, _height);
 
 	//Define all the player's collisions
-	_col1.setPosition(957 - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier)/ 2);
-	_col1.setSize(Vector2f(3 * sizeMultiplier, _height * sizeMultiplier));
-	_col1.setFillColor(Color::Red);
-
-	_col2.setPosition(957 + 3 * sizeMultiplier - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
-	_col2.setSize(Vector2f(6 * sizeMultiplier, _height * sizeMultiplier));
-	_col2.setFillColor(Color::Yellow);
-
-	_col3.setPosition(957 + 3 * sizeMultiplier + 6 * sizeMultiplier - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
-	_col3.setSize(Vector2f(8 * sizeMultiplier, _height * sizeMultiplier));
-	_col3.setFillColor(Color::Green);
-
-	_col4.setPosition(957 + 3 * sizeMultiplier + 6 * sizeMultiplier + 8 * sizeMultiplier - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
-	_col4.setSize(Vector2f(8 * sizeMultiplier, _height * sizeMultiplier));
-	_col4.setFillColor(Color::Cyan);
-
-	_col5.setPosition(957 + 3 * sizeMultiplier + 6 * sizeMultiplier + 8 * sizeMultiplier + 8 * sizeMultiplier - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
-	_col5.setSize(Vector2f(6 * sizeMultiplier, _height * sizeMultiplier));
-	_col5.setFillColor(Color::Yellow);
-
-	_col6.setPosition(957 + 3 * sizeMultiplier + 6 * sizeMultiplier + 8 * sizeMultiplier + 8 * sizeMultiplier +6 * sizeMultiplier - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
-	_col6.setSize(Vector2f(3 * sizeMultiplier, _height * sizeMultiplier));
-	_col6.setFillColor(Color::Red);
+	_hitbox.setPosition(957 - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
+	_hitbox.setSize(Vector2f((32+3) * sizeMultiplier, _height * sizeMultiplier));
+	_hitbox.setFillColor(Color::Red);
 }
 
 bool Player::SetTexture()
@@ -117,7 +97,7 @@ void Player::IdleAnimation()
 {
 	_time = _clock.getElapsedTime();
 	//Idle animation - if the animation is over it will repeat
-	if (_time.asMilliseconds() >= 100.0f) 
+	if (_time.asMilliseconds() >= 100.0f)
 	{
 		_rectSprite.left = 0;
 		_rectSprite.top += _height;
@@ -159,7 +139,7 @@ void Player::ExplodeAnimation()
 	_explodePlayer.setPosition(positionPlayer.x, positionPlayer.y);
 
 	_time = _clock.getElapsedTime();
-	if (_time.asMilliseconds() >= 100.0f) 
+	if (_time.asMilliseconds() >= 100.0f)
 	{
 		_explodeRectSprite.left = 0;
 		_explodeRectSprite.top += 24;
@@ -168,6 +148,7 @@ void Player::ExplodeAnimation()
 			_explodeRectSprite.top = 0;
 			_explodePlayer.setSize(Vector2f(0, 0));
 			_player.setPosition(960, 1015);
+			_hitbox.setPosition(957 - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
 			_State = SPAWNING;
 		}
 		_explodePlayer.setTextureRect(_explodeRectSprite);
@@ -183,7 +164,7 @@ void Player::SpawnAnimation()
 
 	_spawnPlayer.setSize(Vector2f(_width, _height));
 	_time = _clock.getElapsedTime();
-	if (_time.asMilliseconds() >= 100.0f) 
+	if (_time.asMilliseconds() >= 100.0f)
 	{
 		_spawnRectSprite.left = 0;
 		_spawnRectSprite.top += 8;
@@ -247,29 +228,9 @@ bool Player::GetIsSpawned()
 	return _isSpawned;
 }
 
-sf::RectangleShape Player::GetCol(int value)
+sf::RectangleShape Player::GetHitbox()
 {
-	switch (value)
-	{
-	case 1:
-		return _col1;
-		break;
-	case 2:
-		return _col2;
-		break;
-	case 3:
-		return _col3;
-		break;
-	case 4:
-		return _col4;
-		break;
-	case 5:
-		return _col5;
-		break;
-	case 6:
-		return _col6;
-		break;
-	}
+	return _hitbox;
 }
 
 void Player::Draw(sf::RenderWindow& window)
@@ -289,12 +250,7 @@ void Player::Draw(sf::RenderWindow& window)
 		window.draw(_explodePlayer);
 		break;
 	}
-	//window.draw(_col1);
-	//window.draw(_col2);
-	//window.draw(_col3);
-	//window.draw(_col4);
-	//window.draw(_col5);
-	//window.draw(_col6);
+	//window.draw(_hitbox);
 }
 
 void Player::Move()
@@ -302,9 +258,9 @@ void Player::Move()
 	Vector2f currentPosition = _player.getPosition();
 	Vector2f nextPosition;
 
-	_time = _clock.getElapsedTime();
 	if (_State == ALIVE)
 	{
+		_time = _clock.getElapsedTime();
 		if (_time.asMilliseconds() >= 10.0f) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))	//If the 'A' key is pressed, makes the player move by 10 units to the left
 			{
@@ -312,7 +268,7 @@ void Player::Move()
 				_player.move(-10, 0);
 				MoveCol(-10);
 				nextPosition = _player.getPosition();
-				if (nextPosition.x < _leftBorder + (_width * sizeMultiplier) /2)					//If the next position is within a wall, go back to the previous one
+				if (nextPosition.x < _leftBorder + (_width * sizeMultiplier) / 2)					//If the next position is within a wall, go back to the previous one
 				{
 					_player.setPosition(currentPosition.x, currentPosition.y);
 					MoveCol(+10);
@@ -338,10 +294,5 @@ void Player::Move()
 
 void Player::MoveCol(int value)
 {
-	_col1.move(value, 0);
-	_col2.move(value, 0);
-	_col3.move(value, 0);
-	_col4.move(value, 0);
-	_col5.move(value, 0);
-	_col6.move(value, 0);
+	_hitbox.move(value, 0);
 }

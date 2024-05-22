@@ -1,7 +1,10 @@
 #pragma once
+#define _USE_MATH_DEFINES
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
+#include <cmath>
 #include "Player.h"
 #include "Ball.h"
 #include "ObjectShadow.h"
@@ -65,7 +68,8 @@ public:
 	bool SetMusic(int section);
 
 	//Others
-	int CheckCollision(Player player, Ball ball);
+	void checkLives(Player& player);
+	double CheckCollision(Player player, Ball ball);
 	void Draw(sf::RenderWindow& window);
 };
 
