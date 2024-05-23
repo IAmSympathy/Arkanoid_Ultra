@@ -262,7 +262,7 @@ void Player::Move()
 	{
 		_time = _clock.getElapsedTime();
 		if (_time.asMilliseconds() >= 10.0f) {
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))	//If the 'A' key is pressed, makes the player move by 10 units to the left
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))	//If the 'A' key is pressed, makes the player move by 10 units to the left
 			{
 				currentPosition = _player.getPosition();
 				_player.move(-10, 0);
@@ -274,7 +274,7 @@ void Player::Move()
 					MoveCol(+10);
 				}
 			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))	//If the 'A' key is pressed, makes the player move by 10 units to the left
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))	//If the 'A' key is pressed, makes the player move by 10 units to the left
 			{
 				currentPosition = _player.getPosition();
 				_player.move(+10, 0);

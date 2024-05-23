@@ -291,7 +291,7 @@ string Interface::ChangeOption()
 			_option++;
 		}
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
 		return ConfirmOption(_option);
 	}

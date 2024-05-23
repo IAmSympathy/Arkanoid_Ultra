@@ -46,6 +46,10 @@ int main() {
 				section = 1;
 				game.StartLevel(level, section);
 			}
+			else if ((interface.ChangeOption() == "QUIT"))
+			{
+				window.close();
+			}
 			interface.HighlightOption(window);
 			interface.DrawTitleScreen(window);
 		}
