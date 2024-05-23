@@ -1,11 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "Brick.h"
 #include "ObjectShadow.h"
+#include "Interface.h"
 #include "Game.h"
+#include "Brick.h"
 #include "Player.h"
 #include "Ball.h"
-#include "Interface.h"
+
 using namespace sf;		
 using namespace std;	
 
@@ -17,8 +18,10 @@ int main() {
 
 	Game game;
 	Interface interface;
+	int level = 0;
+	int section = 1;
 	interface.Initialize();
-	game.StartLevel(1);
+
 
 	//Main loop
 	while (window.isOpen())
@@ -34,11 +37,27 @@ int main() {
 
 		window.clear(Color::Black);
 
+		//Menu logic
+		if (level == 0)
+		{
+			if (interface.ChangeOption() == "PLAY")
+			{
+				level = 1;
+				section = 1;
+				game.StartLevel(level, section);
+			}
+			interface.HighlightOption(window);
+			interface.DrawTitleScreen(window);
+		}
 		//Game logic
-		game.Play();
-		interface.updateStats(game.GetScore(),game.GetHighScore(), game.GetLives(), game.GetLevel());
-		game.Draw(window);
-		interface.DrawInGameStats(window);
+		else
+		{
+			game.Play();
+			interface.updateStats(game.GetScore(), game.GetHighScore(), game.GetLives(), game.GetLevel());
+			game.Draw(window);
+			interface.DrawInGameStats(window);
+		}
+
 
 		window.display();
 	}

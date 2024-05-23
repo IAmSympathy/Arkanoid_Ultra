@@ -54,7 +54,7 @@ public:
 	Game();
 
 	//Logic
-	void StartLevel(int level);
+	void StartLevel(int level, int section);
 	void Play();
 
 	//Getters

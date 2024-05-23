@@ -30,13 +30,13 @@ Game::Game()
 	_borderBG.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
 }
 
-void Game::StartLevel(int level)
+void Game::StartLevel(int level, int section)
 {
-	SetMusic(level);
+	SetMusic(section);
 	_music.setVolume(13.f);
 	_music.play();
 
-	SetBackground(level);
+	SetBackground(section);
 	SetBorder(NORMAL);
 
 	_ball.SetTexture();
@@ -132,6 +132,11 @@ bool Game::SetBackground(int section)
 	case 1:
 		if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBG1.png"))
 			return false;
+		break;
+	case 2:
+		if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBG2.png"))
+			return false;
+		break;
 	}
 	_background.setTexture(&_textureBackground);
 }

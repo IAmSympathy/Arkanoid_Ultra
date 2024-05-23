@@ -5,7 +5,6 @@
 using namespace::std;
 using namespace::sf;
 
-
 Interface::Interface()
 {
 	_scoreText.setString("SCORE");
@@ -25,116 +24,39 @@ Interface::Interface()
 	_Slives.setString("");
 	_Slevel.setString("");
 	_SlevelText.setString("ROUND");
-	option = 1;
-}
+	_option = 1;
 
-void Interface::updateStats(int scoreValue, int highscoreValue, int lives, int level)
-{
-	_lives.setString(std::to_string(lives));
-	_score.setString(std::to_string(scoreValue));
-	_level.setString(std::to_string(level));
-	//Shadow
-	_Slives.setString(std::to_string(lives));
-	_Sscore.setString(std::to_string(scoreValue));
-	_Slevel.setString(std::to_string(level));
-
-	if (scoreValue > highscoreValue)
-	{
-		_highscore.setString(std::to_string(scoreValue));
-		_Shighscore.setString(std::to_string(scoreValue));
-	}
-
-	else
-	{
-		_highscore.setString(std::to_string(highscoreValue));
-		_Shighscore.setString(std::to_string(highscoreValue));
-	}
-
-}
-
-bool Interface::loadLogo()
-{
-	if (!_logoTexture.loadFromFile("Titre.png"))
-	{
-		return false;
-	}
-
-	_logo.setTexture(&_logoTexture);
-}
-
-bool Interface::loadLiveIcon()
-{
-	if (!_liveTexture.loadFromFile("ArkanoidUltra_Data/Sprites/Menu/IconLive.png"))
-	{
-		return false;
-	}
-
-	_liveIcon.setTexture(&_liveTexture);
-}
-
-bool Interface::loadFont()
-{
-	if (!font.loadFromFile("ArkanoidUltra_Data/Font/nintendo-nes-font.ttf"))
-	{
-		return false;
-	}
-}
-
-void Interface::DrawTitleScreen(sf::RenderWindow& window)
-{
-	window.draw(_logo);
-	window.draw(_optionPlay);
-	window.draw(_optionExit);
-}
-
-void Interface::DrawInGameStats(sf::RenderWindow& window)
-{
-	//Shadows
-	window.draw(_SscoreText);
-	window.draw(_Sscore);
-	window.draw(_ShighscoreText);
-	window.draw(_Shighscore);
-	window.draw(_SlivesText);
-	window.draw(_Slives);
-	window.draw(_Slevel);
-	window.draw(_SlevelText);
-	//Text
-	window.draw(_scoreText);
-	window.draw(_score);
-	window.draw(_highscoreText);
-	window.draw(_highscore);
-	window.draw(_livesText);
-	window.draw(_liveIcon);
-	window.draw(_lives);
-	window.draw(_level);
-	window.draw(_levelText);
-
-
-
-}
-
-void Interface::Initialize()
-{
 	loadFont();
 	loadLiveIcon();
 	loadLogo();
 
 	//Images
-	_logo.setPosition(371, 200);
+	_logo.setPosition(1920 / 2, 200);
+	_logo.setOrigin(96, 20);
 	_logo.setSize(Vector2f(193, 41));
-	_logo.setScale(3, 3);
+	_logo.setScale(4, 4);
+	_background.setPosition(0, 0);		// On définit sa position
+	_background.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
 
 
 	//Text Options
-	_optionPlay.setString("Play");
+	_optionPlay.setString("PLAY");
 	_optionPlay.setFont(font);
 	_optionPlay.setPosition(915, 500);
 	_optionPlay.setFillColor(Color::Red);
+	_SoptionPlay.setString("PLAY");
+	_SoptionPlay.setFont(font);
+	_SoptionPlay.setPosition(915 + 8, 500 + 8);
+	_SoptionPlay.setFillColor(Color::Black);
 
-	_optionExit.setString("Exit");
+	_optionExit.setString("EXIT");
 	_optionExit.setFont(font);
-	_optionExit.setPosition(920, 600);
+	_optionExit.setPosition(915 , 600);
 	_optionExit.setFillColor(Color::White);
+	_SoptionExit.setString("EXIT");
+	_SoptionExit.setFont(font);
+	_SoptionExit.setPosition(915 + 8, 600 + 8);
+	_SoptionExit.setFillColor(Color::Black);
 
 	//In-Game Stats
 	_scoreText.setFont(font);
@@ -176,6 +98,11 @@ void Interface::Initialize()
 	_level.setFillColor(Color::White);
 	_level.setCharacterSize(40);
 	//Shadows
+	_Slogo.setPosition(1920 / 2 + 16, 200 + 16);
+	_Slogo.setOrigin(96, 20);
+	_Slogo.setSize(Vector2f(193, 41));
+	_Slogo.setScale(4, 4);
+
 	_SscoreText.setFont(font);
 	_SscoreText.setPosition(180 + 8, 140 + 8);
 	_SscoreText.setFillColor(Color::Black);
@@ -208,64 +135,178 @@ void Interface::Initialize()
 	_SlevelText.setFillColor(Color::Black);
 	_SlevelText.setCharacterSize(40);
 	_Slevel.setFont(font);
-	_Slevel.setPosition(1750+ 8, 550 + 8);
+	_Slevel.setPosition(1750 + 8, 550 + 8);
 	_Slevel.setFillColor(Color::Black);
 	_Slevel.setCharacterSize(40);
 }
 
+void Interface::updateStats(int scoreValue, int highscoreValue, int lives, int level)
+{
+	_lives.setString(std::to_string(lives));
+	_score.setString(std::to_string(scoreValue));
+	_level.setString(std::to_string(level));
+	//Shadow
+	_Slives.setString(std::to_string(lives));
+	_Sscore.setString(std::to_string(scoreValue));
+	_Slevel.setString(std::to_string(level));
+
+	if (scoreValue > highscoreValue)
+	{
+		_highscore.setString(std::to_string(scoreValue));
+		_Shighscore.setString(std::to_string(scoreValue));
+	}
+
+	else
+	{
+		_highscore.setString(std::to_string(highscoreValue));
+		_Shighscore.setString(std::to_string(highscoreValue));
+	}
+
+}
+
+bool Interface::loadLogo()
+{
+	if (!_logoTexture.loadFromFile("ArkanoidUltra_Data/Sprites/Menu/Logo.png"))
+	{
+		return false;
+	}
+	_logo.setTexture(&_logoTexture);
+
+	if (!_SlogoTexture.loadFromFile("ArkanoidUltra_Data/Sprites/Menu/LogoS.png"))
+	{
+		return false;
+	}
+	_Slogo.setTexture(&_SlogoTexture);
+}
+
+bool Interface::loadLiveIcon()
+{
+	if (!_liveTexture.loadFromFile("ArkanoidUltra_Data/Sprites/Menu/IconLive.png"))
+	{
+		return false;
+	}
+
+	_liveIcon.setTexture(&_liveTexture);
+}
+
+bool Interface::loadFont()
+{
+	if (!font.loadFromFile("ArkanoidUltra_Data/Font/nintendo-nes-font.ttf"))
+	{
+		return false;
+	}
+}
+
+bool Interface::SetMusic()
+{
+	if (!_buffer.loadFromFile("ArkanoidUltra_Data/Musics/Menu.wav"))
+		return false;
+	_music.setBuffer(_buffer);
+}
+
+bool Interface::SetBackground()
+{
+	if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/MenuBG.png"))
+		return false;
+	_background.setTexture(&_textureBackground);
+
+}
+
+void Interface::DrawTitleScreen(sf::RenderWindow& window)
+{
+	window.draw(_background);
+	window.draw(_Slogo);
+	window.draw(_logo);
+	window.draw(_SoptionPlay);
+	window.draw(_SoptionExit);
+	window.draw(_optionPlay);
+	window.draw(_optionExit);
+}
+
+void Interface::DrawInGameStats(sf::RenderWindow& window)
+{
+	//Shadows
+	window.draw(_SscoreText);
+	window.draw(_Sscore);
+	window.draw(_ShighscoreText);
+	window.draw(_Shighscore);
+	window.draw(_SlivesText);
+	window.draw(_Slives);
+	window.draw(_Slevel);
+	window.draw(_SlevelText);
+	//Text
+	window.draw(_scoreText);
+	window.draw(_score);
+	window.draw(_highscoreText);
+	window.draw(_highscore);
+	window.draw(_livesText);
+	window.draw(_liveIcon);
+	window.draw(_lives);
+	window.draw(_level);
+	window.draw(_levelText);
+
+
+
+}
+
+void Interface::Initialize()
+{
+	SetMusic();
+	SetBackground();
+	_music.setVolume(13.f);
+	_music.play();
+}
+
 void Interface::HighlightOption(sf::RenderWindow& window)
 {
-	switch (option)
+	switch (_option)
 	{
 	case 1:
-		_optionPlay.setFillColor(Color::Red);
+		_optionPlay.setFillColor(Color::White);
+
+		_optionExit.setFillColor(sf::Color(67, 68, 66));
+		break;
+	case 2:
+		_optionPlay.setFillColor(sf::Color(67, 68, 66));
 
 		_optionExit.setFillColor(Color::White);
 		break;
-	case 2:
-		_optionPlay.setFillColor(Color::White);
-
-		_optionExit.setFillColor(Color::Red);
-		break;
 	}
 }
 
-int Interface::ChangeOption(sf::Event& event)
+string Interface::ChangeOption()
 {
-
-	switch (event.type)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
-	case sf::Event::KeyPressed:
-		switch (event.key.code)
+		if (_option != _minOption)
 		{
-		case sf::Keyboard::Up:
-			if (option != 1)
-			{
-				option--;
-			}
-			break;
-		case sf::Keyboard::Down:
-			if (option != 2)
-			{
-				option++;
-			}
-			break;
-		case sf::Keyboard::Enter:
-			return option;
-			break;
+			_option--;
 		}
-		break;
 	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		if (_option != _maxOption)
+		{
+			_option++;
+		}
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+	{
+		return ConfirmOption(_option);
+	}
+	return "NONE";
 }
 
-void Interface::ConfirmOption(sf::RenderWindow& window, int option)
+string Interface::ConfirmOption(int option)
 {
 	if (option == 1)
 	{
-
+		return "PLAY";
 	}
 	if (option == 2)
 	{
-		window.close();
+		return "QUIT";
 	}
+	return "NONE";
 }
