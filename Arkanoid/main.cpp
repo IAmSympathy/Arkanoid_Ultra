@@ -1,14 +1,15 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "ObjectShadow.h"
-#include "Interface.h"
+#include "Menu.h"
+#include "UserInterface.h"
 #include "Game.h"
 #include "Brick.h"
 #include "Player.h"
 #include "Ball.h"
 
-using namespace sf;		
-using namespace std;	
+using namespace sf;
+using namespace std;
 
 int main() {
 
@@ -17,11 +18,13 @@ int main() {
 	window.setFramerateLimit(144);
 
 	Game game;
-	Interface interface;
+	Menu menu;
+	UserInterface userInterface;
 	int level = 0;
 	int section = 1;
-	interface.Initialize();
-
+	int episode = 0;
+	enum state { TITLE, EPISODES, LEVELS, QUIT, INSTRUCTION };
+	menu.Initialize();
 
 	//Main loop
 	while (window.isOpen())
@@ -40,26 +43,44 @@ int main() {
 		//Menu logic
 		if (level == 0)
 		{
-			if (interface.ChangeOption() == "PLAY")
+			switch (menu.GetState())
 			{
-				level = 1;
-				section = 1;
-				game.StartLevel(level, section);
+			case TITLE:
+				if (menu.ChangeOption() == 1)
+				{
+					menu.SetState(EPISODES);
+
+				}
+				else if ((menu.ChangeOption() == 2))
+				{
+					window.close();
+				}
+				break;
+			case EPISODES:
+					episode = menu.ChangeOption();
+					if (episode != 0)
+					{
+						menu.SetState(LEVELS);
+					}
+				break;
+			case LEVELS:
+				level = menu.ChangeOption();
+				if (level != 0)
+					game.StartLevel(level,section);
+				break;
 			}
-			else if ((interface.ChangeOption() == "QUIT"))
-			{
-				window.close();
-			}
-			interface.HighlightOption(window);
-			interface.DrawTitleScreen(window);
+			menu.updateText();
+			menu.HighlightOption(window);
+			menu.IsKeyPressed(event);
+			menu.Draw(window);
 		}
 		//Game logic
 		else
 		{
 			game.Play();
-			interface.updateStats(game.GetScore(), game.GetHighScore(), game.GetLives(), game.GetLevel());
+			userInterface.updateStats(game.GetScore(), game.GetHighScore(), game.GetLives(), game.GetLevel());
 			game.Draw(window);
-			interface.DrawInGameStats(window);
+			userInterface.DrawInGameStats(window);
 		}
 
 
