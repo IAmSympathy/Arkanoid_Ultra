@@ -30,13 +30,23 @@ Game::Game()
 	_borderBG.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
 }
 
-void Game::StartLevel(int level, int section)
+void Game::StartLevel(int &level, int &section, int &episode)
 {
+	_level = level;
+	if (level >= 1 && level <= 7)
+		section = 1;
+	else if (level >= 8 && level <= 15)
+		section = 2;
+	else if (level >= 16 && level <= 23)
+		section = 3;
+	else if (level >= 24 && level <= 30)
+		section = 4;
+	else if (level == 31)
+		section = 5;
 	SetMusic(section);
 	_music.setVolume(13.f);
 	_music.play();
-
-	SetBackground(section);
+	SetBackground(episode, section);
 	SetBorder(NORMAL);
 
 	_ball.SetTexture();
@@ -125,19 +135,99 @@ int Game::GetLevel()
 	return _level;
 }
 
-bool Game::SetBackground(int section)
+bool Game::SetBackground(int &episode, int &section)
 {
-	switch (section)
+	switch (episode)
 	{
 	case 1:
-		if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBG1.png"))
-			return false;
+		switch (section)
+		{
+		case 1:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/OneBG1.png"))
+				return false;
+			break;
+		case 2:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/OneBG2.png"))
+				return false;
+			break;
+		case 3:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/OneBG3.png"))
+				return false;
+			break;
+		case 4:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/OneBG4.png"))
+				return false;
+			break;
+		case 5:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/OneBG5.png"))
+				return false;
+			break;
+		case 6:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/OneBG6.png"))
+				return false;
+			break;
+		}
 		break;
 	case 2:
-		if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBG2.png"))
-			return false;
+		switch (section)
+		{
+		case 1:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/TwoBG1.png"))
+				return false;
+			break;
+		case 2:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/TwoBG2.png"))
+				return false;
+			break;
+		case 3:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/TwoBG3.png"))
+				return false;
+			break;
+		case 4:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/TwoBG4.png"))
+				return false;
+			break;
+		case 5:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/TwoBG5.png"))
+				return false;
+			break;
+		case 6:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/TwoBG6.png"))
+				return false;
+			break;
+		}
+		break;
+	case 3:
+		switch (section)
+		{
+		case 1:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/ThreeBG1.png"))
+				return false;
+			break;
+		case 2:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/ThreeBG2.png"))
+				return false;
+			break;
+		case 3:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/ThreeBG3.png"))
+				return false;
+			break;
+		case 4:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/ThreeBG4.png"))
+				return false;
+			break;
+		case 5:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/ThreeBG5.png"))
+				return false;
+			break;
+		case 6:
+			if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/ThreeBG6.png"))
+				return false;
+			break;
+		}
 		break;
 	}
+	
 	_background.setTexture(&_textureBackground);
 }
 

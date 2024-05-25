@@ -23,7 +23,7 @@ int main() {
 	int level = 0;
 	int section = 1;
 	int episode = 0;
-	enum state { TITLE, EPISODES, LEVELS, QUIT, INSTRUCTION };
+	enum state { TITLE, EPISODES, LEVELS, QUIT, INSTRUCTIONS };
 	menu.Initialize();
 
 	//Main loop
@@ -43,6 +43,7 @@ int main() {
 		//Menu logic
 		if (level == 0)
 		{
+
 			switch (menu.GetState())
 			{
 			case TITLE:
@@ -62,14 +63,16 @@ int main() {
 					{
 						menu.SetState(LEVELS);
 					}
+					if (episode == 5)
+						menu.SetState(INSTRUCTIONS);
 				break;
 			case LEVELS:
 				level = menu.ChangeOption();
 				if (level != 0)
-					game.StartLevel(level,section);
+					game.StartLevel(level,section, episode);
 				break;
 			}
-			menu.updateText();
+			menu.updateText(menu.GetOption());
 			menu.HighlightOption(window);
 			menu.IsKeyPressed(event);
 			menu.Draw(window);

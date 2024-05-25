@@ -54,7 +54,7 @@ public:
 	Game();
 
 	//Logic
-	void StartLevel(int level, int section);
+	void StartLevel(int &level, int &section, int &episode);
 	void Play();
 
 	//Getters
@@ -63,7 +63,7 @@ public:
 	int GetHighScore();
 	int GetLevel();
 	//Setters
-	bool SetBackground(int section);
+	bool SetBackground(int &episode, int &section);
 	bool SetBorder(int size);
 	bool SetMusic(int section);
 

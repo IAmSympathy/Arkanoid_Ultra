@@ -14,12 +14,13 @@ private:
 	int _option;
 	const int _minOption = 1;
 	int _maxOption = 2;
-	const std::string _previewPath = "ArkanoidUltra_Data/Level/Previews/";
+	const std::string _levelPreviewPath = "ArkanoidUltra_Data/Previews/Levels/";
+	const std::string _episodePreviewPath = "ArkanoidUltra_Data/Previews/Episodes/";
 	const std::string _imgFileExtension = ".png";
 	int _state;
-	int _level;
 	int _knownLevels;
-	enum state { TITLE, EPISODES, LEVELS, QUIT,INSTRUCTION };
+	const int _maxLevels = 3;
+	enum state { TITLE, EPISODES, LEVELS, QUIT,INSTRUCTIONS };
 
 	sf::Font font;
 
@@ -27,9 +28,11 @@ private:
 	int _secondOptionY;
 	int _thirdOptionY;
 	int _fourthOptionY;
-
+	int _fifthOptionY;
+	int _chooseEpisodeX;
 	//Checks
 	bool enterIsPressed;
+	bool escapeIsPressed;
 	bool upIsPressed;
 	bool downIsPressed;
 	bool leftIsPressed;
@@ -38,6 +41,10 @@ private:
 	//Images
 	sf::Texture _textureBackground;
 	sf::RectangleShape _background;
+	sf::Texture _textureTerminalBG;
+	sf::RectangleShape _TerminalBG;
+	sf::Texture _textureTerminalOverlay;
+	sf::RectangleShape _TerminalOverlay;
 
 	sf::RectangleShape _logo;
 	sf::Texture _logoTexture;
@@ -50,25 +57,35 @@ private:
 	sf::RectangleShape _previewMiddle;
 	sf::Texture _texturePreviewRight;
 	sf::RectangleShape _previewRight;
-
+	sf::Texture _textureEpisodePreview;
+	sf::RectangleShape _episodePreview;
 	//Text Options
 	sf::Text _firstOption;
 	sf::Text _secondOption;
 	sf::Text _thirdOption;
 	sf::Text _fourthOption;
+	sf::Text _fifthOption;
+	sf::FloatRect textRect;
 	//--Shadows
 	sf::Text _SfirstOption;
 	sf::Text _SsecondOption;
 	sf::Text _SthirdOption;
 	sf::Text _SfourthOption;
+	sf::Text _SfifthOption;
 	sf::Text _chooseEpisode;
 	sf::Text _SchooseEpisode;
+	sf::Text _levelNumber;
+	sf::Text _SlevelNumber;
+	std::string number;
 
-	sf::FloatRect textRect;
 
 	//Audios
 	sf::SoundBuffer _buffer;
 	sf::Sound _music;
+	sf::SoundBuffer _confirmBuffer;
+	sf::Sound _confirmSound;
+	sf::SoundBuffer _changeBuffer;
+	sf::Sound _changeSound;
 public:
 	//Constructors
 	Menu();
@@ -82,13 +99,16 @@ public:
 	//Load
 	bool loadLogo();
 	bool loadFont();
-	bool loadPreview(int level);
+	bool loadLevelPreview(int level);
+	bool loadEpisodePreview(int option);
 	bool SetMusic();
+	bool SetSounds();
 	bool SetBackground();
 	//Setters
 	void SetState(int state);
 	//Getters
 	int GetState();
+	int GetOption();
 
 	//Select Option
 	void HighlightOption(sf::RenderWindow& window);
@@ -97,7 +117,8 @@ public:
 
 	//Other
 	void updateMaxOptionNumber();
-	void updateText();
+	void updateText(int level);
+	void updateTerminalBG();
 	void Draw(sf::RenderWindow& window);
 };
 
