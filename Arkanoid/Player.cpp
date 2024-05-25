@@ -39,7 +39,7 @@ Player::Player()
 
 	//Define all the player's collisions
 	_hitbox.setPosition(957 - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
-	_hitbox.setSize(Vector2f((32+3) * sizeMultiplier, _height * sizeMultiplier));
+	_hitbox.setSize(Vector2f((32 + 3) * sizeMultiplier, _height * sizeMultiplier));
 	_hitbox.setFillColor(Color::Red);
 }
 
@@ -91,6 +91,22 @@ void Player::SetBorders(int leftBorder, int rightBorder, int upBorder)
 	_leftBorder = leftBorder;
 	_rightBorder = rightBorder;
 	_upBorder = upBorder;
+}
+
+void Player::SetLives(int lives)
+{
+	_lives = lives;
+}
+
+void Player::Reset()
+{
+	PlaySound(1);
+	_State = SPAWNING;
+	_player.setPosition(960, 1015);
+	_hitbox.setPosition(957 - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
+	_spawnPlayer.setPosition(960, 1015);
+	_diePlayer.setPosition(960, 1015);
+	_explodePlayer.setPosition(960, 1015);
 }
 
 void Player::IdleAnimation()
@@ -193,6 +209,7 @@ void Player::Revive()
 	_State = ALIVE;
 }
 
+
 void Player::PlaySound(int sound)
 {
 	switch (sound)
@@ -288,6 +305,11 @@ void Player::Move()
 
 			}
 			_clock.restart();
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))	//If the 'A' key is pressed, makes the player move by 10 units to the left
+			{
+				Die();
+			}
 		}
 	}
 }

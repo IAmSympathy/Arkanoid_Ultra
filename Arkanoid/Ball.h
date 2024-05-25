@@ -53,7 +53,7 @@ public:
 
 	//Setters
 	void SetAngle(double xVelocity, double yVelocity);
-	void SetState(int State);
+	void Reset(int State);
 	void SetBorders(int leftBorder, int rightBorder, int upBorder);
 
 	bool SetTexture();

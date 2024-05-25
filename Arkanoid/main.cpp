@@ -20,10 +20,12 @@ int main() {
 	Game game;
 	Menu menu;
 	UserInterface userInterface;
+	int option = 0;
 	int level = 0;
 	int section = 1;
 	int episode = 0;
-	enum state { TITLE, EPISODES, LEVELS, QUIT, INSTRUCTIONS };
+	enum state { TITLE, EPISODES, LEVELS, QUIT, INSTRUCTIONS, GAMEOVER, PAUSE };
+	enum playerStates { SPAWNING, ALIVE, DYING, EXPLODING, THROW };
 	menu.Initialize();
 
 	//Main loop
@@ -41,7 +43,7 @@ int main() {
 		window.clear(Color::Black);
 
 		//Menu logic
-		if (level == 0)
+		if (menu.GetState() != -1)
 		{
 
 			switch (menu.GetState())
@@ -49,7 +51,7 @@ int main() {
 			case TITLE:
 				if (menu.ChangeOption() == 1)
 				{
-					menu.SetState(EPISODES);
+					menu.Reset(EPISODES);
 
 				}
 				else if ((menu.ChangeOption() == 2))
@@ -58,35 +60,68 @@ int main() {
 				}
 				break;
 			case EPISODES:
-					episode = menu.ChangeOption();
-					if (episode != 0)
-					{
-						menu.SetState(LEVELS);
-					}
-					if (episode == 5)
-						menu.SetState(INSTRUCTIONS);
+				episode = menu.ChangeOption();
+				if (!(episode == 0 || episode == 5))
+				{
+					menu.Reset(LEVELS);
+				}
 				break;
 			case LEVELS:
 				level = menu.ChangeOption();
 				if (level != 0)
-					game.StartLevel(level,section, episode);
-				break;
+				{
+					game.StartLevel(level, section, episode);
+					menu.Reset(-1);
+				}
+			case GAMEOVER:
+				option = menu.ChangeOption();
+				if (option == 1)
+				{
+					menu.Reset(-1);
+					game.Reset();
+					game.StartLevel(level, section, episode);
+				}
+				if (option == 2)
+				{
+					menu.Initialize();
+					game.Reset();
+				}
+			case PAUSE:
+				option = menu.ChangeOption();
+				if (option == 1)
+				{
+					game.SetPaused(false);
+					menu.Reset(-1);
+				}
+				if (option == 2)
+				{
+					menu.Initialize();
+					game.Reset();
+					game.SetPaused(false);
+				}
 			}
-			menu.updateText(menu.GetOption());
-			menu.HighlightOption(window);
-			menu.IsKeyPressed(event);
-			menu.Draw(window);
+
 		}
 		//Game logic
 		else
 		{
 			game.Play();
 			userInterface.updateStats(game.GetScore(), game.GetHighScore(), game.GetLives(), game.GetLevel());
-			game.Draw(window);
-			userInterface.DrawInGameStats(window);
+			if (game.GetLives() == 0 && game.GetPlayerState() == SPAWNING)
+			{
+				menu.Reset(GAMEOVER);
+			}
+			if (game.GetPaused() == true)
+				menu.Reset(PAUSE);
 		}
-
-
+		game.Draw(window);
+		userInterface.DrawInGameStats(window);
+		menu.updateTextBG();
+		menu.updateText(menu.GetOption());
+		menu.HighlightOption(window);
+		menu.IsKeyPressed(event);
+		game.IsKeyPressed(event);
+		menu.Draw(window);
 		window.display();
 	}
 }

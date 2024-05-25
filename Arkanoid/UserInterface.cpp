@@ -104,6 +104,24 @@ UserInterface::UserInterface()
 	_Slevel.setPosition(1750 + 8, 550 + 8);
 	_Slevel.setFillColor(Color::Black);
 	_Slevel.setCharacterSize(40);
+
+	//Interactable Menu
+	_firstOption.setString("OPTION 1");
+	_firstOption.setFont(font);
+	_firstOption.setPosition(915, 500);
+	_firstOption.setFillColor(Color::White);
+	_SfirstOption.setString("OPTION 1");
+	_SfirstOption.setFont(font);
+	_SfirstOption.setPosition(915 + 8, 500 + 8);
+	_SfirstOption.setFillColor(Color::Black);
+	_secondOption.setString("OPTION 2");
+	_secondOption.setFont(font);
+	_secondOption.setPosition(915, 600);
+	_secondOption.setFillColor(Color::White);
+	_SsecondOption.setString("OPTION 2");
+	_SsecondOption.setFont(font);
+	_SsecondOption.setPosition(915 + 8, 600 + 8);
+	_SsecondOption.setFillColor(Color::Black);
 }
 
 void UserInterface::updateStats(int scoreValue, int highscoreValue, int lives, int level)

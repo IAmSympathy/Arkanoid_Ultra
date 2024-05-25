@@ -9,6 +9,8 @@ Game::Game()
 	_ballCollision = 0;
 	_isDead = false;
 	_SpawnSoundOnce = false;
+	_paused = false;
+	escapeIsPressed = false;
 
 	//Shadows
 	_playerShadow.SetType("Player");
@@ -28,6 +30,11 @@ Game::Game()
 	_borderS.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
 	_borderBG.setPosition(0, 0);		// On définit sa position
 	_borderBG.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
+
+	_ball.SetTexture();
+	_ballShadow.SetTexture();
+	_player.SetTexture();
+	_playerShadow.SetTexture();
 }
 
 void Game::StartLevel(int &level, int &section, int &episode)
@@ -49,39 +56,52 @@ void Game::StartLevel(int &level, int &section, int &episode)
 	SetBackground(episode, section);
 	SetBorder(NORMAL);
 
-	_ball.SetTexture();
-	_ballShadow.SetTexture();
 	_ball.SetBorders(_leftBorder, _rightBorder, _upBorder);
-
-	_player.SetTexture();
-	_playerShadow.SetTexture();
 	_player.SetBorders(_leftBorder, _rightBorder, _upBorder);
+	_player.Reset();
 }
 
 void Game::Play()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+	if (_paused == false)
 	{
-		_score++;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+		{
+			_score++;
+		}
+		//Vérification mort
+		if (_player.GetPlayerStatus() != ALIVE)
+			_ball.Reset(2);
+		else if (_ball.GetState() == 2)
+			_player.Die();
+
+		//Actions de la balle
+		_ball.CheckCollision(CheckCollision(_player, _ball));
+		_ball.Move();
+		_ballShadow.move(_ball.getBall());
+
+		//Actions du joueur
+		_player.Move();
+		_playerShadow.move(_player.GetPlayer());
+		if (_ball.GetState() == 0)
+			_ball.MoveThrow(_player.GetPlayer());
+		checkLives(_player);
+		if (_lives == 0)
+			_music.stop();
 	}
-	//Vérification mort
-	if (_player.GetPlayerStatus() != ALIVE)
-		_ball.SetState(2);
-	else if (_ball.GetState() == 2)
-		_player.Die();
-
-	//Actions de la balle
-	_ball.CheckCollision(CheckCollision(_player, _ball));
-	_ball.Move();
-	_ballShadow.move(_ball.getBall());
-
-	//Actions du joueur
-	_player.Move();
-	_playerShadow.move(_player.GetPlayer());
-	if (_ball.GetState() == 0)
-		_ball.MoveThrow(_player.GetPlayer());
-	checkLives(_player);
-
+	
+	if (_player.GetPlayerStatus() == ALIVE)
+	{
+		if (escapeIsPressed == false)
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			{
+				escapeIsPressed = true;
+				if (_paused == false)
+					_paused = true;
+			}
+		}
+	}
 	int playerStatus = _player.GetPlayerStatus();
 	switch (playerStatus)
 	{
@@ -95,11 +115,11 @@ void Game::Play()
 			}
 
 			_player.SpawnAnimation();
-				if (_player.GetIsSpawned() == true)
-				{
-					_player.Revive();
-					_ball.Revive();
-				}
+			if (_player.GetIsSpawned() == true)
+			{
+				_player.Revive();
+				_ball.Revive();
+			}
 		}
 		break;
 	case ALIVE:
@@ -113,6 +133,13 @@ void Game::Play()
 		_player.ExplodeAnimation();
 		break;
 	}
+}
+
+void Game::Reset()
+{
+	_music.stop();
+	_score = 0;
+	_lives = 3;
 }
 
 int Game::GetLives()
@@ -133,6 +160,16 @@ int Game::GetHighScore()
 int Game::GetLevel()
 {
 	return _level;
+}
+
+int Game::GetPlayerState()
+{
+	return _player.GetPlayerStatus();
+}
+
+bool Game::GetPaused()
+{
+	return _paused;
 }
 
 bool Game::SetBackground(int &episode, int &section)
@@ -264,6 +301,20 @@ bool Game::SetMusic(int section)
 		break;
 	}
 	_music.setBuffer(_buffer);
+}
+
+void Game::SetPaused(bool value)
+{
+	_paused = value;
+}
+
+void Game::IsKeyPressed(Event event)
+{
+	if (event.type == sf::Event::KeyReleased) {
+		if (event.key.code == sf::Keyboard::Escape) {
+			escapeIsPressed = false;
+		}
+	}
 }
 
 void Game::checkLives(Player &player)

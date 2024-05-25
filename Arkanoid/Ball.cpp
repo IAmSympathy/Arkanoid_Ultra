@@ -126,7 +126,7 @@ void Ball::SetAngle(double xVelocity, double yVelocity)
 	_velocity.y = yVelocity;
 }
 
-void Ball::SetState(int State)
+void Ball::Reset(int State)
 {
 	_State = State;
 }

@@ -30,8 +30,10 @@ private:
 	int _ballCollision;
 	bool _isDead;
 	bool _SpawnSoundOnce;
+	bool _paused;
 	enum playerStates { SPAWNING, ALIVE, DYING, EXPLODING };
 	enum borderSize { SMALL, NORMAL, LARGE };
+	bool escapeIsPressed;
 
 	//Textures
 	sf::Texture _textureBackground;
@@ -56,18 +58,23 @@ public:
 	//Logic
 	void StartLevel(int &level, int &section, int &episode);
 	void Play();
+	void Reset();
 
 	//Getters
 	int GetLives();
 	int GetScore();
 	int GetHighScore();
 	int GetLevel();
+	int GetPlayerState();
+	bool GetPaused();
 	//Setters
 	bool SetBackground(int &episode, int &section);
 	bool SetBorder(int size);
 	bool SetMusic(int section);
+	void SetPaused(bool value);
 
 	//Others
+	void IsKeyPressed(Event event);
 	void checkLives(Player& player);
 	double CheckCollision(Player player, Ball ball);
 	void Draw(sf::RenderWindow& window);

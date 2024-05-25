@@ -7,7 +7,7 @@ class UserInterface
 {
 private:
 	//Attributes
- 	sf::Font font;
+	sf::Font font;
 
 	//In-Game Stats
 	sf::RectangleShape _liveIcon;
@@ -32,11 +32,17 @@ private:
 	sf::Text _Slevel;
 	sf::Text _SlevelText;
 
+	//Interactble Menu
+	sf::Text _firstOption;
+	sf::Text _SfirstOption;
+	sf::Text _secondOption;
+	sf::Text _SsecondOption;
+
 public:
 	//Constructor
 	UserInterface();
 
-	//In-Game
+	//Action
 	void updateStats(int scoreValue, int highscoreValue, int lives, int level);
 
 	//Load

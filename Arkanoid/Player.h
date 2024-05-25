@@ -69,6 +69,8 @@ public:
 	bool SetTexture();
 	bool SetSound(int sound);
 	void SetBorders(int leftBorder, int rightBorder, int upBorder);
+	void SetLives(int lives);
+	void Reset();
 
 	//Getters
 	sf::RectangleShape GetPlayer();

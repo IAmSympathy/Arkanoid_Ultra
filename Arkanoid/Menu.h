@@ -20,7 +20,7 @@ private:
 	int _state;
 	int _knownLevels;
 	const int _maxLevels = 3;
-	enum state { TITLE, EPISODES, LEVELS, QUIT,INSTRUCTIONS };
+	enum state { TITLE, EPISODES, LEVELS, QUIT, INSTRUCTIONS, GAMEOVER, PAUSE };
 
 	sf::Font font;
 
@@ -30,6 +30,7 @@ private:
 	int _fourthOptionY;
 	int _fifthOptionY;
 	int _chooseEpisodeX;
+	int _chooseEpisodeY;
 	//Checks
 	bool enterIsPressed;
 	bool escapeIsPressed;
@@ -41,10 +42,9 @@ private:
 	//Images
 	sf::Texture _textureBackground;
 	sf::RectangleShape _background;
-	sf::Texture _textureTerminalBG;
-	sf::RectangleShape _TerminalBG;
-	sf::Texture _textureTerminalOverlay;
-	sf::RectangleShape _TerminalOverlay;
+	sf::RectangleShape _textBG;
+	sf::Texture _textureLevelOverlay;
+	sf::RectangleShape _levelOverlay;
 
 	sf::RectangleShape _logo;
 	sf::Texture _logoTexture;
@@ -105,7 +105,7 @@ public:
 	bool SetSounds();
 	bool SetBackground();
 	//Setters
-	void SetState(int state);
+	void Reset(int state);
 	//Getters
 	int GetState();
 	int GetOption();
@@ -118,7 +118,7 @@ public:
 	//Other
 	void updateMaxOptionNumber();
 	void updateText(int level);
-	void updateTerminalBG();
+	void updateTextBG();
 	void Draw(sf::RenderWindow& window);
 };
 
