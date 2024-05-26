@@ -42,7 +42,7 @@ public:
 
 	//Actions
 	void CreateBorder();
-	void Hit(sf::Texture texture);
+	void Hit(sf::Texture &texture);
 	void GoldBrickAnimation();
 
 	//Getters
@@ -54,7 +54,7 @@ public:
 	int GetHealth() const;
 	int GetType() const;
 	//Setters
-	void SetTexture(sf::Texture texture);
+	void SetTexture(sf::Texture &texture);
 	void SetType(int type);
 	void SetBrick(sf::RectangleShape _brickField);
 	void SetUp(int haut);

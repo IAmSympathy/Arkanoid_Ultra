@@ -39,7 +39,7 @@ public:
 	void CountBrickLeft();
 
 	//Checks
-	void CheckCollision(Brick& _brickField, Ball& ball);
+	void CheckCollision(Brick& brick, Ball& ball);
 
 	//Getters
 	std::vector<Brick> GetField();

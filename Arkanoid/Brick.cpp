@@ -94,7 +94,7 @@ sf::RectangleShape Brick::GetBrick() const
 	return _brick;
 }
 
-void Brick::Hit(sf::Texture texture)
+void Brick::Hit(sf::Texture &texture)
 {
 	_health -= 1;
 	if (_health == 0)
@@ -106,9 +106,10 @@ void Brick::Hit(sf::Texture texture)
 	}
 	if (_type == 9)
 		_rectSprite.top = 0;
+	_brick.setTexture(&texture);
 }
 
-void Brick::SetTexture(sf::Texture texture)
+void Brick::SetTexture(sf::Texture& texture)
 {
 	if (_health == _baseHealth)
 	{
