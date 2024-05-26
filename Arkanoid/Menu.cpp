@@ -14,7 +14,11 @@ Menu::Menu()
 	//Attributes
 	_state = TITLE;
 	_option = 1;
-	_knownLevels = 2;
+	_episode = 1;
+	_ep1knownLevels = 2;
+	_ep2knownLevels = 2;
+	_ep3knownLevels = 2;
+	_ep4knownLevels = 2;
 	//Checks
 	escapeIsPressed = false;
 	enterIsPressed = false;
@@ -177,6 +181,29 @@ bool Menu::LoadBackground()
 	return true;
 }
 
+void Menu::LoadSave()
+{
+	ifstream SaveFile;
+	string skip;
+	SaveFile.open("ArkanoidUltra_Data/saveEpisode.txt");
+	SaveFile >> skip >> _ep1knownLevels;
+	SaveFile >> skip >> _ep2knownLevels;
+	SaveFile >> skip >> _ep3knownLevels;
+	SaveFile >> skip >> _ep4knownLevels;
+	SaveFile.close();
+}
+
+void Menu::SaveSave()
+{
+	ofstream SaveFile;
+	SaveFile.open("ArkanoidUltra_Data/saveEpisode.txt");
+	SaveFile << "Episode1: " << _ep1knownLevels << endl;
+	SaveFile << "Episode2: " << _ep2knownLevels << endl;
+	SaveFile << "Episode3: " << _ep3knownLevels << endl;
+	SaveFile << "Episode4: " << _ep4knownLevels << endl;
+	SaveFile.close();
+}
+
 //Set the state to the parameter one, resets the option variable to 1 and change the maxOption depending on the menu state
 void Menu::SetState(int state)
 {
@@ -184,6 +211,10 @@ void Menu::SetState(int state)
 	_state = state;
 	cout << "[Menu] Switching state to " << state << endl;
 	UpdateMaxOptionNumber();
+}
+void Menu::SetEpisode(int episode)
+{
+	_episode = episode;
 }
 
 int Menu::GetState() const
@@ -209,7 +240,7 @@ void Menu::UpdateMaxOptionNumber()
 		_maxOption = 2;
 		break;
 	}
-	cout << "[Menu] Max Option is now "<< _maxOption << endl;
+	cout << "[Menu] Max Option is now " << _maxOption << endl;
 }
 
 //Changes the text variable's string depending on the menu state
@@ -455,13 +486,14 @@ void Menu::UpdateTextBG()
 
 void Menu::Initialize()
 {
+	LoadSave();
 	SetState(TITLE);
 	HighlightOption();
 	LoadMusic();
 	LoadSounds();
 	LoadFont();
 	LoadLogo();
-	LoadLevelPreview(_option);
+	LoadLevelPreview(_option, _episode);
 	LoadEpisodePreview(_option);
 	LoadBackground();
 	_music.setVolume(13.f);
@@ -473,7 +505,7 @@ void Menu::IsKeyPressed(Event event)
 {
 	if (event.type == sf::Event::KeyReleased) {
 		if (event.key.code == sf::Keyboard::Enter || event.key.code == sf::Keyboard::Space) {
-			if (enterIsPressed == true) 
+			if (enterIsPressed == true)
 			{
 				enterIsPressed = false;
 				cout << "[Menu::Keybind] Enter key released" << endl;
@@ -481,7 +513,7 @@ void Menu::IsKeyPressed(Event event)
 			}
 		}
 		if (event.key.code == sf::Keyboard::Escape) {
-			if (escapeIsPressed == true) 
+			if (escapeIsPressed == true)
 			{
 				escapeIsPressed = false;
 				cout << "[Menu::Keybind] Escape key released" << endl;
@@ -570,7 +602,7 @@ void Menu::HighlightOption()
 	}
 }
 
-int Menu::ChangeOption()
+int Menu::ChangeOption(int episode)
 {
 	UpdateTextBG();
 	UpdateText(_option);
@@ -588,7 +620,7 @@ int Menu::ChangeOption()
 					_changeSound.play();
 					_option--;
 				}
-				LoadLevelPreview(_option);
+				LoadLevelPreview(_option, _episode);
 			}
 		}
 		if (rightIsPressed == false)
@@ -597,12 +629,38 @@ int Menu::ChangeOption()
 			{
 				rightIsPressed = true;
 				cout << "[Menu::Keybind] Right or D key has been pressed" << endl;
-				if (_option != _knownLevels)
+				switch (episode)
 				{
-					_changeSound.play();
-					_option++;
+				case 1:
+					if (_option != _ep1knownLevels)
+					{
+						_changeSound.play();
+						_option++;
+					}
+					break;
+				case 2:
+					if (_option != _ep2knownLevels)
+					{
+						_changeSound.play();
+						_option++;
+					}
+					break;
+				case 3:
+					if (_option != _ep3knownLevels)
+					{
+						_changeSound.play();
+						_option++;
+					}
+					break;
+				case 4:
+					if (_option != _ep4knownLevels)
+					{
+						_changeSound.play();
+						_option++;
+					}
+					break;
 				}
-				LoadLevelPreview(_option);
+				LoadLevelPreview(_option, _episode);
 			}
 		}
 	}
@@ -620,7 +678,7 @@ int Menu::ChangeOption()
 					_option--;
 					HighlightOption();
 				}
-				LoadLevelPreview(_option);
+				LoadLevelPreview(_option, _episode);
 			}
 		}
 		if (rightIsPressed == false)
@@ -629,13 +687,42 @@ int Menu::ChangeOption()
 			{
 				rightIsPressed = true;
 				cout << "[Menu::Keybind] Left or A key has been pressed" << endl;
-				if (_option != _knownLevels)
+				switch (episode)
 				{
-					_changeSound.play();
-					_option++;
-					HighlightOption();
+				case 1:
+					if (_option != _ep1knownLevels)
+					{
+						_changeSound.play();
+						_option++;
+						HighlightOption();
+					}
+					break;
+				case 2:
+					if (_option != _ep2knownLevels)
+					{
+						_changeSound.play();
+						_option++;
+						HighlightOption();
+					}
+					break;
+				case 3:
+					if (_option != _ep3knownLevels)
+					{
+						_changeSound.play();
+						_option++;
+						HighlightOption();
+					}
+					break;
+				case 4:
+					if (_option != _ep4knownLevels)
+					{
+						_changeSound.play();
+						_option++;
+						HighlightOption();
+					}
+					break;
 				}
-				LoadLevelPreview(_option);
+				LoadLevelPreview(_option, _episode);
 			}
 		}
 	}
@@ -684,6 +771,8 @@ int Menu::ChangeOption()
 			enterIsPressed = true;
 			HighlightOption();
 			cout << "[Menu::Keybind] Enter or Space key has been pressed" << endl;
+			if (_state == EPISODES)
+				LoadLevelPreview(_option, _episode);
 			if (_state == LEVELS)
 				_music.stop();
 			return ConfirmOption(_option);
@@ -721,7 +810,7 @@ int Menu::ConfirmOption(int option)
 	return option;
 }
 
-bool Menu::LoadLevelPreview(int level)
+bool Menu::LoadLevelPreview(int level, int episode)
 {
 	std::string middlePreviewPath = _levelPreviewPath;
 	std::string leftPreviewPath = _levelPreviewPath;
@@ -781,14 +870,52 @@ bool Menu::LoadLevelPreview(int level)
 	}
 	_previewRightLocked.setTexture(&_texturePreviewRightLocked, true);
 
-	if (level == _knownLevels)
+	switch (episode)
 	{
-		cout << "[Menu::Load] Next level is locked (" << level + 1 << ")" << endl;
-		if (!_texturePreviewRightLocked.loadFromFile("ArkanoidUltra_Data/Previews/Levels/Locked.png"))
+	case 1:
+		if (level == _ep1knownLevels)
 		{
-			return false;
+			cout << "[Menu::Load] Next level is locked (" << level + 1 << ")" << endl;
+			if (!_texturePreviewRightLocked.loadFromFile("ArkanoidUltra_Data/Previews/Levels/Locked.png"))
+			{
+				return false;
+			}
+			_previewRightLocked.setTexture(&_texturePreviewRightLocked, true);
 		}
-		_previewRightLocked.setTexture(&_texturePreviewRightLocked, true);
+		break;
+	case 2:
+		if (level == _ep2knownLevels)
+		{
+			cout << "[Menu::Load] Next level is locked (" << level + 1 << ")" << endl;
+			if (!_texturePreviewRightLocked.loadFromFile("ArkanoidUltra_Data/Previews/Levels/Locked.png"))
+			{
+				return false;
+			}
+			_previewRightLocked.setTexture(&_texturePreviewRightLocked, true);
+		}
+		break;
+	case 3:
+		if (level == _ep3knownLevels)
+		{
+			cout << "[Menu::Load] Next level is locked (" << level + 1 << ")" << endl;
+			if (!_texturePreviewRightLocked.loadFromFile("ArkanoidUltra_Data/Previews/Levels/Locked.png"))
+			{
+				return false;
+			}
+			_previewRightLocked.setTexture(&_texturePreviewRightLocked, true);
+		}
+		break;
+	case 4:
+		if (level == _ep4knownLevels)
+		{
+			cout << "[Menu::Load] Next level is locked (" << level + 1 << ")" << endl;
+			if (!_texturePreviewRightLocked.loadFromFile("ArkanoidUltra_Data/Previews/Levels/Locked.png"))
+			{
+				return false;
+			}
+			_previewRightLocked.setTexture(&_texturePreviewRightLocked, true);
+		}
+		break;
 	}
 	return true;
 }

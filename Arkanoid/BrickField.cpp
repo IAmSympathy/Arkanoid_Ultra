@@ -30,18 +30,24 @@ void BrickField::CheckCollision(Brick& brick, Ball& ball)
 		{
 			velocity.y *= -1;
 			_isCollision = true;
-			ball.Bounce(3);
 			switch (brick.GetType())
 			{
 			default:
 				brick.Hit(_textureNormal);
+				ball.Bounce(3);
 				break;
 			case 8:
 				brick.Hit(_textureSilver);
+				ball.Bounce(4);
 				break;
 			case 9:
 				brick.Hit(_textureGold);
+				ball.Bounce(5);
 				break;
+			}
+			if (brick.GetHealth() == 0)
+			{
+				_score = brick.GetScore();
 			}
 
 		}
@@ -54,13 +60,20 @@ void BrickField::CheckCollision(Brick& brick, Ball& ball)
 			{
 			default:
 				brick.Hit(_textureNormal);
+				ball.Bounce(3);
 				break;
 			case 8:
 				brick.Hit(_textureSilver);
+				ball.Bounce(4);
 				break;
 			case 9:
 				brick.Hit(_textureGold);
+				ball.Bounce(5);
 				break;
+			}
+			if (brick.GetHealth() == 0)
+			{
+				_score = brick.GetScore();
 			}
 		}
 	}
@@ -68,7 +81,7 @@ void BrickField::CheckCollision(Brick& brick, Ball& ball)
 }
 
 //Loads a file and read the bricks currentType and position from it
-void BrickField::InitializeField(int level)
+void BrickField::InitializeField(int level, int section)
 {
 	LoadTexture();
 
@@ -110,13 +123,18 @@ void BrickField::InitializeField(int level)
 			Brick newBrick(currentType);
 			newBrick.setPosition(position.x + 60 * x, position.y + 28 * y);
 			newBrick.CreateBorder();
+			if (newBrick.GetType()== 8)
+			{
+				newBrick.SilverPoint(level);
+				newBrick.SilverHealth(section);
+			}
 			switch (currentType)
 			{
 			case 8:
-				newBrick.SetTexture(_textureGold);
+				newBrick.SetTexture(_textureSilver);
 				break;
 			case 9:
-				newBrick.SetTexture(_textureSilver);
+				newBrick.SetTexture(_textureGold);
 				break;
 			default:
 				newBrick.SetTexture(_textureNormal);
@@ -152,6 +170,28 @@ std::vector<Brick> BrickField::GetField()
 	return _field;
 }
 
+int BrickField::GetScore()
+{
+	return _score;
+}
+
+void BrickField::SetField(std::vector<Brick>& field)
+{
+	for (int i = 0; i < field.size(); i++)
+	{
+		_field[i].SetHealth(field[i].GetHealth());
+		_field[i].SetUp(field[i].GetUp());
+		_field[i].SetDown(field[i].GetDown());
+		_field[i].SetLeft(field[i].GetLeft());
+		_field[i].SetRight(field[i].GetRight());
+	}
+}
+
+void BrickField::SetScore(int score)
+{
+	_score = score;
+}
+
 
 bool BrickField::LoadTexture()
 {
@@ -175,6 +215,18 @@ void BrickField::Draw(sf::RenderWindow& window, Ball ball)
 			if (_shadowField[i].GetType() != -1)
 			{
 				_shadowField[i].SetRectSpriteTop(63);
+			}
+			switch (_field[i].GetType())
+			{
+			case 8:
+				_field[i].SetTexture(_textureSilver);
+				break;
+			case 9:
+				_field[i].SetTexture(_textureGold);
+				break;
+			default:
+				_field[i].SetTexture(_textureNormal);
+				break;
 			}
 			window.draw(_shadowField[i].GetBrick());
 			window.draw(_field[i].GetBrick());

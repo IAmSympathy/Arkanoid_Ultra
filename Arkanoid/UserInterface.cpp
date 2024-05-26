@@ -116,18 +116,8 @@ void UserInterface::updateStats(int scoreValue, int highscoreValue, int lives, i
 	_scoreShadow.setString(std::to_string(scoreValue));
 	_levelShadow.setString(std::to_string(level));
 
-	if (scoreValue > highscoreValue)
-	{
-		_highscore.setString(std::to_string(scoreValue));
-		_highscoreShadow.setString(std::to_string(scoreValue));
-	}
-
-	else
-	{
-		_highscore.setString(std::to_string(highscoreValue));
-		_highscoreShadow.setString(std::to_string(highscoreValue));
-	}
-
+	_highscore.setString(std::to_string(highscoreValue));
+	_highscoreShadow.setString(std::to_string(highscoreValue));
 }
 
 bool UserInterface::loadFont()

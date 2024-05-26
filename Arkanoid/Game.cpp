@@ -14,7 +14,8 @@ Game::Game()
 	_level = 1;
 	_lives = 3;
 	_score = 0;
-	_highscore = 10000;
+	_highscore = 0;
+	LoadHighScore();
 	//Checks
 	_isGameStarted = false;
 	_ballCollision = 0;
@@ -69,7 +70,7 @@ void Game::StartLevel(int &level, int &section, int &episode)
 	_music.setVolume(13.f);
 	LoadBackground(episode, section);
 	LoadBorder(NORMAL);
-	_brickfield.InitializeField(level);
+	_brickfield.InitializeField(level, section);
 
 	_ball.SetBorders(_leftBorder, _rightBorder, _upBorder);
 	_player.SetBorders(_leftBorder, _rightBorder, _upBorder);
@@ -113,7 +114,8 @@ void Game::Play()
 		{
 			_brickfield.CheckCollision(_field[i], _ball);
 		}
-
+		_brickfield.SetField(_field);
+		SetScore();
 		//Player's actions
 		_player.Move();
 		_playerShadow.move(_player.GetPlayer());
@@ -169,6 +171,10 @@ void Game::Play()
 		_player.ExplodeAnimation();
 		break;
 	}
+	if (_score > _highscore)
+	{
+		_highscore = _score;
+	}
 }
 
 //Resets the game stats when going back to the main menu
@@ -208,6 +214,29 @@ int Game::GetPlayerState()
 bool Game::GetPaused() const
 {
 	return _paused;
+}
+
+void Game::SetScore()
+{
+	_score += _brickfield.GetScore();
+	_brickfield.SetScore(0);
+}
+
+void Game::LoadHighScore()
+{
+	ifstream SaveFile;
+	string skip;
+	SaveFile.open("ArkanoidUltra_Data/saveHighScore.txt");
+	SaveFile >> skip >> _highscore;
+	SaveFile.close();
+}
+
+void Game::SaveHighScore()
+{
+	ofstream SaveFile;
+	SaveFile.open("ArkanoidUltra_Data/saveHighScore.txt");
+	SaveFile << "Highscore: " << _highscore;
+	SaveFile.close();
 }
 
 //Load backgrounds based on the secions (every 8 levels) and episodes
@@ -394,14 +423,17 @@ void Game::Draw(sf::RenderWindow& window)
 	{
 		if (_player.GetPlayerStatus() == ALIVE)
 		{
-			_playerShadow.draw(window);
 			_ballShadow.draw(window);
-			_ball.Draw(window);
 		}
 		_brickfield.Draw(window, _ball);
+		if (_player.GetPlayerStatus() == ALIVE)
+		{
+			_playerShadow.draw(window);
+			_ball.Draw(window);
+		}
 		_player.Draw(window);
 	}
-
 	window.draw(_border);
 }
+
 

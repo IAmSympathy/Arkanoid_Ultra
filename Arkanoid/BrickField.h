@@ -19,6 +19,7 @@ class BrickField
 private:
 	//Attributes
 	int _nbBrick;
+	int _score = 0;
 	std::vector<Brick> _field;
 	std::vector<Brick> _shadowField;
 
@@ -34,7 +35,7 @@ private:
 	sf::Time _time;
 public:
 	//Actions
-	void InitializeField(int level);
+	void InitializeField(int level, int section);
 	void UpdateShadows(Ball ball);
 	void CountBrickLeft();
 
@@ -43,6 +44,10 @@ public:
 
 	//Getters
 	std::vector<Brick> GetField();
+	int GetScore();
+
+	void SetField(std::vector<Brick>& field);
+	void SetScore(int score);
 
 	//Load ressources
 	bool LoadTexture();

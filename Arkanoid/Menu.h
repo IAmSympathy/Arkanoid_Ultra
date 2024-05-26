@@ -7,6 +7,7 @@
 ====================================*/
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics/Font.hpp>
@@ -20,7 +21,11 @@ private:
 	const int _minOption = 1;
 	int _maxOption = 2;
 	int _state;
-	int _knownLevels;
+	int _episode;
+	int _ep1knownLevels;
+	int _ep2knownLevels;
+	int _ep3knownLevels;
+	int _ep4knownLevels;
 	const int _maxLevels = 3;
 	enum state { TITLE, EPISODES, LEVELS, QUIT, INSTRUCTIONS, GAMEOVER, PAUSE };
 	const std::string _levelPreviewPath = "ArkanoidUltra_Data/Previews/Levels/";
@@ -98,7 +103,7 @@ public:
 	///Actions
 	void Initialize();
 	void HighlightOption();
-	int ChangeOption();
+	int ChangeOption(int episode);
 	int ConfirmOption(int option);
 	void UpdateMaxOptionNumber();
 	void UpdateText(int level);
@@ -111,17 +116,19 @@ public:
 	int GetOption() const;
 	//Setters
 	void SetState(int state);
+	void SetEpisode(int episode);
 
 	//Load ressources
 	bool LoadLogo();
 	bool LoadFont();
-	bool LoadLevelPreview(int level);
+	bool LoadLevelPreview(int level, int episode);
 	bool LoadEpisodePreview(int option);
 	bool LoadMusic();
 	bool LoadSounds();
 	bool LoadBackground();
+	void LoadSave();
+	void SaveSave();
 
 	//Other
 	void Draw(sf::RenderWindow& window);
 };
-

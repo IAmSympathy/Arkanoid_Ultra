@@ -44,6 +44,8 @@ public:
 	void CreateBorder();
 	void Hit(sf::Texture &texture);
 	void GoldBrickAnimation();
+	void SilverPoint(int level);
+	void SilverHealth(int section);
 
 	//Getters
 	sf::RectangleShape GetBrick() const;
@@ -53,6 +55,7 @@ public:
 	int GetDown() const;
 	int GetHealth() const;
 	int GetType() const;
+	int GetScore();
 	//Setters
 	void SetTexture(sf::Texture &texture);
 	void SetType(int type);
@@ -63,4 +66,7 @@ public:
 	void SetLeft(int gauche);
 	void setPosition(int x, int y);
 	void SetRectSpriteTop(int value);
+	void SetHealth(int health);
+
+	
 };

@@ -55,32 +55,32 @@ int main() {
 			switch (menu.GetState())
 			{
 			case TITLE:
-				if (menu.ChangeOption() == 1)
+				if (menu.ChangeOption(episode) == 1)
 				{
 					menu.SetState(EPISODES);
 
 				}
-				else if ((menu.ChangeOption() == 2))
+				else if ((menu.ChangeOption(episode) == 2))
 				{
 					window.close();
 				}
 				break;
 			case EPISODES:
-				episode = menu.ChangeOption();
+				episode = menu.ChangeOption(episode);
 				if (!(episode == 0 || episode == 5))
 				{
 					menu.SetState(LEVELS);
 				}
 				break;
 			case LEVELS:
-				level = menu.ChangeOption();
+				level = menu.ChangeOption(episode);
 				if (level != 0)
 				{
 					game.StartLevel(level, section, episode);
 					menu.SetState(-1);
 				}
 			case GAMEOVER:
-				option = menu.ChangeOption();
+				option = menu.ChangeOption(episode);
 				if (option == 1)
 				{
 					menu.SetState(-1);
@@ -93,7 +93,7 @@ int main() {
 					game.Reset();
 				}
 			case PAUSE:
-				option = menu.ChangeOption();
+				option = menu.ChangeOption(episode);
 				if (option == 1)
 				{
 					game.SetPaused(false);
@@ -101,6 +101,8 @@ int main() {
 				}
 				if (option == 2)
 				{
+					menu.SaveSave();
+					game.SaveHighScore();
 					menu.Initialize();
 					game.Reset();
 					game.SetPaused(false);

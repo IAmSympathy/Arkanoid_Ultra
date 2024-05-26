@@ -80,10 +80,14 @@ public:
 	//Setters
 	bool SetMusic(int section);
 	void SetPaused(bool value);
+	void SetScore();
 
 	//Load ressources
 	bool LoadBackground(int &episode, int &section);
 	bool LoadBorder(int size); //Also sets the border width, so it can be sent to the ball and player
+
+	void LoadHighScore();
+	void SaveHighScore();
 
 	//Others
 	void Draw(sf::RenderWindow& window);

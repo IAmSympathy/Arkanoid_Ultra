@@ -36,10 +36,6 @@ Brick::Brick(int type)
 	_brick.scale(sizeMultiplier, sizeMultiplier);
 	_brick.setSize(Vector2f(_width, _height));
 	_rectSprite = IntRect(0, 0, _width, _height);
-	if (type == 8)
-	{
-		_health = 4;
-	}
 	if (type == 9)
 	{
 		_health = 999;
@@ -106,7 +102,7 @@ void Brick::Hit(sf::Texture &texture)
 	}
 	if (_type == 9)
 		_rectSprite.top = 0;
-	_brick.setTexture(&texture);
+	SetTexture(texture);
 }
 
 void Brick::SetTexture(sf::Texture& texture)
@@ -140,6 +136,10 @@ void Brick::SetTexture(sf::Texture& texture)
 		{
 			_rectSprite.top = 21;
 		}
+		if (_health == _baseHealth - 4 )
+		{
+			_rectSprite.top = 28;
+		}
 	}
 	if (_type == 9)
 	{
@@ -147,6 +147,11 @@ void Brick::SetTexture(sf::Texture& texture)
 		{
 			_rectSprite.top = 0;
 		}
+	}
+	if (_health == 0)
+	{
+		_rectSprite.top = 56;
+		_brick.setScale(0, 0);
 	}
 	_brick.setTextureRect(_rectSprite);
 	std::cout << "Brick textures has been changed" << endl;
@@ -183,6 +188,11 @@ void Brick::SetRectSpriteTop(int value)
 	_brick.setTextureRect(_rectSprite);
 }
 
+void Brick::SetHealth(int health)
+{
+	_health = health;
+}
+
 void Brick::SetRight(int droite)
 {
 	_right = droite;
@@ -217,6 +227,33 @@ void Brick::GoldBrickAnimation()
 	}
 }
 
+void Brick::SilverPoint(int level)
+{
+	_point = level * 50;
+}
+
+void Brick::SilverHealth(int section)
+{
+	switch (section)
+	{
+	case 1:
+		_health = 2;
+		break;
+	case 2:
+		_health = 3;
+		break;
+	case 3:
+		_health = 4;
+		break;
+	case 4:
+		_health = 5;
+		break;
+	default:
+		break;
+	}
+	_baseHealth = _health;
+}
+
 int Brick::GetHealth() const
 {
 	return _health;
@@ -225,4 +262,9 @@ int Brick::GetHealth() const
 int Brick::GetType() const
 {
 	return _type;
+}
+
+int Brick::GetScore()
+{
+	return _point;
 }
