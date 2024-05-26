@@ -186,7 +186,7 @@ void Menu::SetState(int state)
 	UpdateMaxOptionNumber();
 }
 
-int Menu::GetState()
+int Menu::GetState() const
 {
 	return _state;
 }
@@ -413,7 +413,7 @@ void Menu::Draw(sf::RenderWindow& window)
 	}
 }
 
-int Menu::GetOption()
+int Menu::GetOption() const
 {
 	return _option;
 }

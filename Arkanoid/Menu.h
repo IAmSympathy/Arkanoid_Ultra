@@ -107,8 +107,8 @@ public:
 	void IsKeyPressed(sf::Event event);
 
 	//Getters
-	int GetState();
-	int GetOption();
+	int GetState() const;
+	int GetOption() const;
 	//Setters
 	void SetState(int state);
 

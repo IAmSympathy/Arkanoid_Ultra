@@ -243,27 +243,27 @@ void Player::PlaySound(int sound)
 	}
 }
 
-sf::RectangleShape Player::GetPlayer()
+sf::RectangleShape Player::GetPlayer() const
 {
 	return _player;
 }
 
-int Player::GetPlayerStatus()
+int Player::GetPlayerStatus() const
 {
 	return _state;
 }
 
-int Player::GetLive()
+int Player::GetLive() const
 {
 	return _lives;
-}
+} 
 
-bool Player::GetIsSpawned()
+bool Player::GetIsSpawned() const
 {
 	return _isSpawned;
 }
 
-sf::RectangleShape Player::GetHitbox()
+sf::RectangleShape Player::GetHitbox() const
 {
 	return _hitbox;
 }

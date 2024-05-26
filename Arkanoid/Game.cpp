@@ -16,9 +16,10 @@ Game::Game()
 	_score = 0;
 	_highscore = 10000;
 	//Checks
+	_isGameStarted = false;
 	_ballCollision = 0;
 	_isDead = false;
-	_SpawnSoundOnce = false;
+	_spawnSoundOnce = false;
 	_paused = false;
 	escapeKeyIsPressed = false;
 
@@ -68,10 +69,12 @@ void Game::StartLevel(int &level, int &section, int &episode)
 	_music.setVolume(13.f);
 	LoadBackground(episode, section);
 	LoadBorder(NORMAL);
+	_brickfield.InitializeField(level);
 
 	_ball.SetBorders(_leftBorder, _rightBorder, _upBorder);
 	_player.SetBorders(_leftBorder, _rightBorder, _upBorder);
 	_player.Reset();
+	_isGameStarted = true;
 	cout << "[Game] Game started at Level " << level << ", Section "<< section << ", Episode " << episode << endl;
 }
 
@@ -104,12 +107,19 @@ void Game::Play()
 		_ball.Move();
 		_ballShadow.move(_ball.GetBall());
 
+		//Brick Actions
+		std::vector<Brick> _field = _brickfield.GetField();
+		for (int i = 0; i < _field.size(); i++)
+		{
+			_brickfield.CheckCollision(_field[i], _ball);
+		}
+
 		//Player's actions
 		_player.Move();
 		_playerShadow.move(_player.GetPlayer());
 		if (_ball.GetState() == 0)
 			_ball.MoveThrow(_player.GetPlayer());
-		checkLives(_player);
+		CheckPlayerLives(_player);
 		if (_lives == 0)
 			_music.stop();
 	}
@@ -134,10 +144,10 @@ void Game::Play()
 	case SPAWNING:
 		if (_player.GetLive() > 0)
 		{
-			if (_SpawnSoundOnce == false)
+			if (_spawnSoundOnce == false)
 			{
 				_player.PlaySound(1);
-				_SpawnSoundOnce = true;
+				_spawnSoundOnce = true;
 			}
 
 			_player.SpawnAnimation();
@@ -152,7 +162,7 @@ void Game::Play()
 		_player.IdleAnimation();
 		break;
 	case DYING:
-		_SpawnSoundOnce = false;
+		_spawnSoundOnce = false;
 		_player.DieAnimation();
 		break;
 	case EXPLODING:
@@ -170,22 +180,22 @@ void Game::Reset()
 	_ball.Reset();
 }
 
-int Game::GetLives()
+int Game::GetLives() const
 {
 	return _lives;
 }
 
-int Game::GetScore()
+int Game::GetScore() const
 {
 	return _score;
 }
 
-int Game::GetHighScore()
+int Game::GetHighScore() const
 {
 	return _highscore;
 }
 
-int Game::GetLevel()
+int Game::GetLevel() const
 {
 	return _level;
 }
@@ -195,7 +205,7 @@ int Game::GetPlayerState()
 	return _player.GetPlayerStatus();
 }
 
-bool Game::GetPaused()
+bool Game::GetPaused() const
 {
 	return _paused;
 }
@@ -349,7 +359,7 @@ void Game::IsKeyPressed(Event event)
 	}
 }
 
-void Game::checkLives(Player &player)
+void Game::CheckPlayerLives(Player &player)
 {
 	_lives = player.GetLive();
 }
@@ -380,13 +390,18 @@ void Game::Draw(sf::RenderWindow& window)
 	window.draw(_background);
 	window.draw(_borderBG);
 	window.draw(_borderShadow);
-	if (_player.GetPlayerStatus() == ALIVE)
+	if (_isGameStarted == true)
 	{
-		_playerShadow.draw(window);
-		_ballShadow.draw(window);
-		_ball.Draw(window);
+		if (_player.GetPlayerStatus() == ALIVE)
+		{
+			_playerShadow.draw(window);
+			_ballShadow.draw(window);
+			_ball.Draw(window);
+		}
+		_brickfield.Draw(window, _ball);
+		_player.Draw(window);
 	}
-	_player.Draw(window);
+
 	window.draw(_border);
 }
 

@@ -57,9 +57,11 @@ public:
 	void Reset();
 
 	//Getters
-	sf::RectangleShape GetBall();
-	int GetState();
-	bool GetStartMusic();
+	sf::RectangleShape GetBall() const;
+	int GetState() const;
+	int GetHeight() const;
+	sf::Vector2f GetVelocity() const;
+	bool GetStartMusic() const;
 
 	//Setters
 	void SetAngle(double xVelocity, double yVelocity);

@@ -74,11 +74,11 @@ public:
 	bool LoadTextures();
 
 	//Getters
-	sf::RectangleShape GetPlayer();
-	sf::RectangleShape GetHitbox();
-	int GetPlayerStatus();
-	int GetLive();
-	bool GetIsSpawned();
+	sf::RectangleShape GetPlayer() const;
+	sf::RectangleShape GetHitbox() const;
+	int GetPlayerStatus() const;
+	int GetLive() const;
+	bool GetIsSpawned() const;
 
 	//Setters
 	bool SetSound(int sound);

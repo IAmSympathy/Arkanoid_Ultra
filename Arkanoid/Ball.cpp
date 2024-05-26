@@ -60,7 +60,7 @@ Ball::~Ball()
 	_state = THROW;
 }
 
-RectangleShape Ball::GetBall()
+RectangleShape Ball::GetBall() const
 {
 	return _ball;
 }
@@ -185,6 +185,16 @@ void Ball::SetState(int state)
 	cout << "[Ball] Setting state to" << _state << endl;
 }
 
+int Ball::GetHeight() const
+{
+	return _height;
+}
+
+sf::Vector2f Ball::GetVelocity() const
+{
+	return _velocity;
+}
+
 void Ball::SetBorders(int leftBorder, int rightBorder, int upBorder)
 {
 	_leftBorder = leftBorder;
@@ -192,12 +202,12 @@ void Ball::SetBorders(int leftBorder, int rightBorder, int upBorder)
 	_upBorder = upBorder;
 }
 
-int Ball::GetState()
+int Ball::GetState() const
 {
 	return _state;
 }
 
-bool Ball::GetStartMusic()
+bool Ball::GetStartMusic() const
 {
 	return _startMusic;
 }
@@ -258,7 +268,7 @@ void Ball::CheckCollision(double angle)
 	}
 }
 
-//Plays a sound depending on which collsion type it hit (wall,player,brick) and and makes the ball faster each time
+//Plays a sound depending on which collsion type it hit (wall,player, brick) and and makes the ball faster each time
 void Ball::Bounce(int bounceReason)
 {
 
@@ -283,6 +293,7 @@ void Ball::Bounce(int bounceReason)
 	}
 }
 
+//Resets the ball's speed, state and angle (velocity)
 void Ball::Revive()
 {
 	cout << "[Ball] Reviving ball" << endl;
@@ -290,8 +301,9 @@ void Ball::Revive()
 	_state = THROW;
 	_velocity.x = 1;
 	_velocity.y = 1;
-	_firstThrow = true;
 }
+
+//Allows the ball to play the first throw sound
 void Ball::Reset()
 {
 	_firstThrow = true;

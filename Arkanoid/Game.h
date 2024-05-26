@@ -6,15 +6,15 @@
 // Date : May 13th, 2024
 ====================================*/
 #pragma once
-#define _USE_MATH_DEFINES		//To calculate the angle bvetween the player and the ball
+#define _USE_MATH_DEFINES		//Used to calculate the angle between the player and the ball
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
 #include <cmath>
+#include "BrickField.h"
 #include "Player.h"
 #include "Ball.h"
 #include "ObjectShadow.h"
-
 
 class Game
 {
@@ -22,6 +22,7 @@ private:
 	//Attributes
 	Player _player;
 	Ball _ball;
+	BrickField _brickfield;
 	int _lives;
 	int _score;
 	int _highscore;
@@ -32,9 +33,10 @@ private:
 	ObjectShadow _ballShadow;
 
 	//Checks
+	bool _isGameStarted;
 	int _ballCollision;
 	bool _isDead;
-	bool _SpawnSoundOnce;
+	bool _spawnSoundOnce;
 	bool _paused;
 	bool escapeKeyIsPressed;
 	enum playerStates { SPAWNING, ALIVE, DYING, EXPLODING };
@@ -58,21 +60,22 @@ public:
 	//Constructor
 	Game();
 
-	//Logic
+	//Actions
 	void StartLevel(int &level, int &section, int &episode);
 	void Play();
 	void Reset();
+	//Checks
 	void IsKeyPressed(sf::Event event);
-	void checkLives(Player& player);
+	void CheckPlayerLives(Player& player);
 	double CheckCollision(Player player, Ball ball);
 
 	//Getters
-	int GetLives();
-	int GetScore();
-	int GetHighScore();
-	int GetLevel();
+	int GetLives() const;
+	int GetScore() const;
+	int GetHighScore() const;
+	int GetLevel() const;
 	int GetPlayerState();
-	bool GetPaused();
+	bool GetPaused() const;
 
 	//Setters
 	bool SetMusic(int section);
