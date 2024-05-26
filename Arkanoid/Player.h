@@ -1,44 +1,49 @@
+/*====================================
+// Filename : Player.h
+// Description : This file contains the definitions of the Player class
+//				 which contains the player's movements, animations, collsion checks, sounds and states
+// Author : Samy Larochelle
+// Date : May 9th, 2024
+====================================*/
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
 
-
 class Player
 {
 private:
 	//Attributes
+	int _lives;
  	const int _width = 32;
 	const int _height = 8;
 	const int _totalHeight = _height * 6;
 	const int sizeMultiplier = 4;
-	int _lives;
 
 	//Checks
 	bool _isSpawned;
+	int _state;
 	enum playerStates{ SPAWNING, ALIVE, DYING, EXPLODING, THROW };
-	int _State;
-
-	//Player's sprite*
-	sf::RectangleShape _player;
-	sf::Texture _texturePlayer;
-	sf::IntRect _rectSprite;
-	//Player's Crack sprite
-	sf::RectangleShape _diePlayer;
-	sf::Texture _dieTexturePlayer;
-	sf::IntRect _dieRectSprite;
-	//Player's Dead sprite
-	sf::RectangleShape _explodePlayer;
-	sf::Texture _explodeTexturePlayer;
-	sf::IntRect _explodeRectSprite;
-	//Player's Spawn sprite
-	sf::RectangleShape _spawnPlayer;
-	sf::Texture _spawnTexturePlayer;
-	sf::IntRect _spawnRectSprite;
-
 	//Collisions
 	sf::RectangleShape _hitbox;
 	int _leftBorder, _rightBorder, _upBorder;
+
+	//Sprite
+	sf::RectangleShape _player;
+	sf::Texture _texturePlayer;
+	sf::IntRect _rectSprite;
+	//Crack sprite
+	sf::RectangleShape _diePlayer;
+	sf::Texture _dieTexturePlayer;
+	sf::IntRect _dieRectSprite;
+	//Dead sprite
+	sf::RectangleShape _explodePlayer;
+	sf::Texture _explodeTexturePlayer;
+	sf::IntRect _explodeRectSprite;
+	//Spawn sprite
+	sf::RectangleShape _spawnPlayer;
+	sf::Texture _spawnTexturePlayer;
+	sf::IntRect _spawnRectSprite;
 
 	//Audio
 	sf::SoundBuffer _buffer;
@@ -49,7 +54,7 @@ private:
 	sf::Clock _clock;
 	sf::Time _time;
 public:
-	//Constructors
+	//Constructor
 	Player();
 
 	//Actions
@@ -65,12 +70,8 @@ public:
 	void ExplodeAnimation();
 	void SpawnAnimation();
 
-	//Setters
-	bool SetTexture();
-	bool SetSound(int sound);
-	void SetBorders(int leftBorder, int rightBorder, int upBorder);
-	void SetLives(int lives);
-	void Reset();
+	//Load ressources
+	bool LoadTextures();
 
 	//Getters
 	sf::RectangleShape GetPlayer();
@@ -78,6 +79,13 @@ public:
 	int GetPlayerStatus();
 	int GetLive();
 	bool GetIsSpawned();
+
+	//Setters
+	bool SetSound(int sound);
+	void SetBorders(int leftBorder, int rightBorder, int upBorder);
+	void SetLives(int lives);
+	void SetState(int state);
+	void Reset();
 
 	//Others
 	void Draw(sf::RenderWindow& window);

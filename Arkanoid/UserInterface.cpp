@@ -1,3 +1,11 @@
+/*====================================
+// Filename : UserInterface.cpp
+// Description : This file contains the implementation of the UserInterface class
+//				 which contains the stats' texts and icons and logic
+// Author : Samy Larochelle
+// Date : May 16th, 2024
+====================================*/
+
 #include "UserInterface.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -7,121 +15,95 @@ using namespace::sf;
 
 UserInterface::UserInterface()
 {
-	_scoreText.setString("SCORE");
-	_score.setString("");
-	_highscoreText.setString("HIGHSCORE");
-	_highscore.setString("");
-	_livesText.setString("LIVES");
-	_lives.setString("");
-	_level.setString("");
-	_levelText.setString("ROUND");
-
-	//Shadows
-	_SscoreText.setString("SCORE");
-	_Sscore.setString("");
-	_ShighscoreText.setString("HIGHSCORE");
-	_Shighscore.setString("");
-	_SlivesText.setString("LIVES");
-	_Slives.setString("");
-	_Slevel.setString("");
-	_SlevelText.setString("ROUND");
-
+	//Load ressources
 	loadFont();
 	loadLiveIcon();
 
-	//In-Game Stats
+	//Text actors
+	_scoreText.setString("SCORE");
+	_score.setString("");
 	_scoreText.setFont(font);
-	_scoreText.setPosition(180, 140);
+	_scoreText.setPosition(160, 140);
 	_scoreText.setFillColor(Color::Red);
 	_scoreText.setCharacterSize(32);
 	_score.setFont(font);
 	_score.setPosition(180, 200);
 	_score.setFillColor(Color::White);
 	_score.setCharacterSize(32);
-
+	_highscoreText.setString("HIGHSCORE");
+	_highscore.setString("");
 	_highscoreText.setFont(font);
-	_highscoreText.setPosition(180, 400);
+	_highscoreText.setPosition(160, 400);
 	_highscoreText.setFillColor(Color::Yellow);
 	_highscoreText.setCharacterSize(32);
 	_highscore.setFont(font);
 	_highscore.setPosition(180, 460);
 	_highscore.setFillColor(Color::White);
 	_highscore.setCharacterSize(32);
-
+	_livesText.setString("LIVES");
 	_livesText.setFont(font);
-	_livesText.setPosition(180, 900);
+	_livesText.setPosition(160, 900);
 	_livesText.setFillColor(Color::Blue);
 	_livesText.setCharacterSize(32);
 	_liveIcon.setPosition(190, 965);
 	_liveIcon.setSize(Vector2f(16, 8));
 	_liveIcon.setScale(4, 4);
+	_lives.setString("");
 	_lives.setFont(font);
 	_lives.setPosition(290, 960);
 	_lives.setFillColor(Color::White);
 	_lives.setCharacterSize(32);
-
+	_levelText.setString("ROUND");
 	_levelText.setFont(font);
 	_levelText.setPosition(1490, 550);
 	_levelText.setFillColor(Color::Green);
 	_levelText.setCharacterSize(40);
+	_level.setString("");
 	_level.setFont(font);
 	_level.setPosition(1750, 550);
 	_level.setFillColor(Color::White);
 	_level.setCharacterSize(40);
-
-	_SscoreText.setFont(font);
-	_SscoreText.setPosition(180 + 8, 140 + 8);
-	_SscoreText.setFillColor(Color::Black);
-	_SscoreText.setCharacterSize(32);
-	_Sscore.setFont(font);
-	_Sscore.setPosition(180 + 8, 200 + 8);
-	_Sscore.setFillColor(Color::Black);
-	_Sscore.setCharacterSize(32);
-
-	_ShighscoreText.setFont(font);
-	_ShighscoreText.setPosition(180 + 8, 400 + 8);
-	_ShighscoreText.setFillColor(Color::Black);
-	_ShighscoreText.setCharacterSize(32);
-	_Shighscore.setFont(font);
-	_Shighscore.setPosition(180 + 8, 460 + 8);
-	_Shighscore.setFillColor(Color::Black);
-	_Shighscore.setCharacterSize(32);
-
-	_SlivesText.setFont(font);
-	_SlivesText.setPosition(180 + 8, 900 + 8);
-	_SlivesText.setFillColor(Color::Black);
-	_SlivesText.setCharacterSize(32);
-	_Slives.setFont(font);
-	_Slives.setPosition(290 + 8, 960 + 8);
-	_Slives.setFillColor(Color::Black);
-	_Slives.setCharacterSize(32);
-
-	_SlevelText.setFont(font);
-	_SlevelText.setPosition(1490 + 8, 550 + 8);
-	_SlevelText.setFillColor(Color::Black);
-	_SlevelText.setCharacterSize(40);
-	_Slevel.setFont(font);
-	_Slevel.setPosition(1750 + 8, 550 + 8);
-	_Slevel.setFillColor(Color::Black);
-	_Slevel.setCharacterSize(40);
-
-	//Interactable Menu
-	_firstOption.setString("OPTION 1");
-	_firstOption.setFont(font);
-	_firstOption.setPosition(915, 500);
-	_firstOption.setFillColor(Color::White);
-	_SfirstOption.setString("OPTION 1");
-	_SfirstOption.setFont(font);
-	_SfirstOption.setPosition(915 + 8, 500 + 8);
-	_SfirstOption.setFillColor(Color::Black);
-	_secondOption.setString("OPTION 2");
-	_secondOption.setFont(font);
-	_secondOption.setPosition(915, 600);
-	_secondOption.setFillColor(Color::White);
-	_SsecondOption.setString("OPTION 2");
-	_SsecondOption.setFont(font);
-	_SsecondOption.setPosition(915 + 8, 600 + 8);
-	_SsecondOption.setFillColor(Color::Black);
+	//Shadows
+	_scoreTextShadow.setString("SCORE");
+	_scoreShadow.setString("");
+	_scoreTextShadow.setFont(font);
+	_scoreTextShadow.setPosition(160 + 8, 140 + 8);
+	_scoreTextShadow.setFillColor(Color::Black);
+	_scoreTextShadow.setCharacterSize(32);
+	_scoreShadow.setFont(font);
+	_scoreShadow.setPosition(180 + 8, 200 + 8);
+	_scoreShadow.setFillColor(Color::Black);
+	_scoreShadow.setCharacterSize(32);
+	_highscoreTextShadow.setString("HIGHSCORE");
+	_highscoreShadow.setString("");
+	_highscoreTextShadow.setFont(font);
+	_highscoreTextShadow.setPosition(160 + 8, 400 + 8);
+	_highscoreTextShadow.setFillColor(Color::Black);
+	_highscoreTextShadow.setCharacterSize(32);
+	_highscoreShadow.setFont(font);
+	_highscoreShadow.setPosition(180 + 8, 460 + 8);
+	_highscoreShadow.setFillColor(Color::Black);
+	_highscoreShadow.setCharacterSize(32);
+	_livesTextShadow.setString("LIVES");
+	_livesTextShadow.setFont(font);
+	_livesTextShadow.setPosition(160 + 8, 900 + 8);
+	_livesTextShadow.setFillColor(Color::Black);
+	_livesTextShadow.setCharacterSize(32);
+	_livesShadow.setString("");
+	_livesShadow.setFont(font);
+	_livesShadow.setPosition(290 + 8, 960 + 8);
+	_livesShadow.setFillColor(Color::Black);
+	_livesShadow.setCharacterSize(32);
+	_levelTextShadow.setString("ROUND");
+	_levelTextShadow.setFont(font);
+	_levelTextShadow.setPosition(1490 + 8, 550 + 8);
+	_levelTextShadow.setFillColor(Color::Black);
+	_levelTextShadow.setCharacterSize(40);
+	_levelShadow.setString("");
+	_levelShadow.setFont(font);
+	_levelShadow.setPosition(1750 + 8, 550 + 8);
+	_levelShadow.setFillColor(Color::Black);
+	_levelShadow.setCharacterSize(40);
 }
 
 void UserInterface::updateStats(int scoreValue, int highscoreValue, int lives, int level)
@@ -130,20 +112,20 @@ void UserInterface::updateStats(int scoreValue, int highscoreValue, int lives, i
 	_score.setString(std::to_string(scoreValue));
 	_level.setString(std::to_string(level));
 	//Shadow
-	_Slives.setString(std::to_string(lives));
-	_Sscore.setString(std::to_string(scoreValue));
-	_Slevel.setString(std::to_string(level));
+	_livesShadow.setString(std::to_string(lives));
+	_scoreShadow.setString(std::to_string(scoreValue));
+	_levelShadow.setString(std::to_string(level));
 
 	if (scoreValue > highscoreValue)
 	{
 		_highscore.setString(std::to_string(scoreValue));
-		_Shighscore.setString(std::to_string(scoreValue));
+		_highscoreShadow.setString(std::to_string(scoreValue));
 	}
 
 	else
 	{
 		_highscore.setString(std::to_string(highscoreValue));
-		_Shighscore.setString(std::to_string(highscoreValue));
+		_highscoreShadow.setString(std::to_string(highscoreValue));
 	}
 
 }
@@ -158,25 +140,25 @@ bool UserInterface::loadFont()
 
 bool UserInterface::loadLiveIcon()
 {
-	if (!_liveTexture.loadFromFile("ArkanoidUltra_Data/Sprites/Menu/IconLive.png"))
+	if (!_liveIconTexture.loadFromFile("ArkanoidUltra_Data/Sprites/Menu/IconLive.png"))
 	{
 		return false;
 	}
 
-	_liveIcon.setTexture(&_liveTexture);
+	_liveIcon.setTexture(&_liveIconTexture);
 }
 
 void UserInterface::DrawInGameStats(sf::RenderWindow& window)
 {
 	//Shadows
-	window.draw(_SscoreText);
-	window.draw(_Sscore);
-	window.draw(_ShighscoreText);
-	window.draw(_Shighscore);
-	window.draw(_SlivesText);
-	window.draw(_Slives);
-	window.draw(_Slevel);
-	window.draw(_SlevelText);
+	window.draw(_scoreTextShadow);
+	window.draw(_scoreShadow);
+	window.draw(_highscoreTextShadow);
+	window.draw(_highscoreShadow);
+	window.draw(_livesTextShadow);
+	window.draw(_livesShadow);
+	window.draw(_levelShadow);
+	window.draw(_levelTextShadow);
 	//Text
 	window.draw(_scoreText);
 	window.draw(_score);

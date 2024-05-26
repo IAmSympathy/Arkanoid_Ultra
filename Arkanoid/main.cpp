@@ -1,9 +1,15 @@
+/*====================================
+// Filename : main.cpp
+// Description : This file contains the main function for the Arkanoind game
+// Author : Samy Larochelle
+// Date : May 9th, 2024
+====================================*/
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "ObjectShadow.h"
 #include "Menu.h"
 #include "UserInterface.h"
 #include "Game.h"
+#include "ObjectShadow.h"
 #include "Brick.h"
 #include "Player.h"
 #include "Ball.h"
@@ -51,7 +57,7 @@ int main() {
 			case TITLE:
 				if (menu.ChangeOption() == 1)
 				{
-					menu.Reset(EPISODES);
+					menu.SetState(EPISODES);
 
 				}
 				else if ((menu.ChangeOption() == 2))
@@ -63,7 +69,7 @@ int main() {
 				episode = menu.ChangeOption();
 				if (!(episode == 0 || episode == 5))
 				{
-					menu.Reset(LEVELS);
+					menu.SetState(LEVELS);
 				}
 				break;
 			case LEVELS:
@@ -71,13 +77,13 @@ int main() {
 				if (level != 0)
 				{
 					game.StartLevel(level, section, episode);
-					menu.Reset(-1);
+					menu.SetState(-1);
 				}
 			case GAMEOVER:
 				option = menu.ChangeOption();
 				if (option == 1)
 				{
-					menu.Reset(-1);
+					menu.SetState(-1);
 					game.Reset();
 					game.StartLevel(level, section, episode);
 				}
@@ -91,7 +97,7 @@ int main() {
 				if (option == 1)
 				{
 					game.SetPaused(false);
-					menu.Reset(-1);
+					menu.SetState(-1);
 				}
 				if (option == 2)
 				{
@@ -109,16 +115,13 @@ int main() {
 			userInterface.updateStats(game.GetScore(), game.GetHighScore(), game.GetLives(), game.GetLevel());
 			if (game.GetLives() == 0 && game.GetPlayerState() == SPAWNING)
 			{
-				menu.Reset(GAMEOVER);
+				menu.SetState(GAMEOVER);
 			}
 			if (game.GetPaused() == true)
-				menu.Reset(PAUSE);
+				menu.SetState(PAUSE);
 		}
 		game.Draw(window);
 		userInterface.DrawInGameStats(window);
-		menu.updateTextBG();
-		menu.updateText(menu.GetOption());
-		menu.HighlightOption(window);
 		menu.IsKeyPressed(event);
 		game.IsKeyPressed(event);
 		menu.Draw(window);

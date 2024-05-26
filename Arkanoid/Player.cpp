@@ -1,18 +1,31 @@
+/*====================================
+// Filename : Player.cpp
+// Description : This file contains the implementation of the Player class
+//				 which contains the player's movements, animations, collsion checks, sounds and states
+// Author : Samy Larochelle
+// Date : May 9th, 2024
+====================================*/
 #include "Player.h"
 using namespace sf;
 using namespace std;
 
 Player::Player()
 {
-	//Define the player and its sprite
-	_isSpawned = false;
+	//Attributes
 	_lives = 3;
-	_State = SPAWNING;
+	_state = SPAWNING;
 
+	//Checks
+	_isSpawned = false;
 	_leftBorder = 0;
 	_rightBorder = 0;
 	_upBorder = 0;
+	//Collision
+	_hitbox.setPosition(957 - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
+	_hitbox.setSize(Vector2f((32 + 3) * sizeMultiplier, _height * sizeMultiplier));
+	_hitbox.setFillColor(Color::Red);
 
+	//Sprites
 	_player.scale(sizeMultiplier, sizeMultiplier);
 	_player.setPosition(960, 1015);
 	_player.setSize(Vector2f(0, 0));
@@ -36,14 +49,10 @@ Player::Player()
 	_spawnPlayer.setSize(Vector2f(_width, _height));
 	_spawnPlayer.setOrigin(_width / 2, _height / 2);
 	_spawnRectSprite = IntRect(0, 0, _width, _height);
-
-	//Define all the player's collisions
-	_hitbox.setPosition(957 - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
-	_hitbox.setSize(Vector2f((32 + 3) * sizeMultiplier, _height * sizeMultiplier));
-	_hitbox.setFillColor(Color::Red);
+	cout << "[Player] Player has been created " << endl;
 }
 
-bool Player::SetTexture()
+bool Player::LoadTextures()
 {
 	_player.setTextureRect(_rectSprite);
 	if (!_texturePlayer.loadFromFile("ArkanoidUltra_Data/Sprites/Player.png"))
@@ -64,9 +73,9 @@ bool Player::SetTexture()
 	if (!_spawnTexturePlayer.loadFromFile("ArkanoidUltra_Data/Sprites/PlayerSpawn.png"))
 		return false;
 	_spawnPlayer.setTexture(&_spawnTexturePlayer);
-
 }
 
+//Set sounds depenging on the animation state
 bool Player::SetSound(int sound)
 {
 	switch (sound)
@@ -98,15 +107,23 @@ void Player::SetLives(int lives)
 	_lives = lives;
 }
 
+void Player::SetState(int state)
+{
+	_state = state;
+	cout << "[Player] Switching state to " << state << endl;
+}
+
+//Reset the player to its SPAWNING position and state
 void Player::Reset()
 {
 	PlaySound(1);
-	_State = SPAWNING;
+	SetState(SPAWNING);
 	_player.setPosition(960, 1015);
 	_hitbox.setPosition(957 - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
 	_spawnPlayer.setPosition(960, 1015);
 	_diePlayer.setPosition(960, 1015);
 	_explodePlayer.setPosition(960, 1015);
+	cout << "[Player] Player has been reset " << endl;
 }
 
 void Player::IdleAnimation()
@@ -141,7 +158,7 @@ void Player::DieAnimation()
 		{
 			_dieRectSprite.top = 0;
 			_diePlayer.setSize(Vector2f(0, 0));
-			_State = EXPLODING;
+			SetState(EXPLODING);
 		}
 		_diePlayer.setTextureRect(_dieRectSprite);
 		_clock.restart();
@@ -165,7 +182,7 @@ void Player::ExplodeAnimation()
 			_explodePlayer.setSize(Vector2f(0, 0));
 			_player.setPosition(960, 1015);
 			_hitbox.setPosition(957 - (_width * sizeMultiplier) / 2, 1015 - (_height * sizeMultiplier) / 2);
-			_State = SPAWNING;
+			SetState(SPAWNING);
 		}
 		_explodePlayer.setTextureRect(_explodeRectSprite);
 		_clock.restart();
@@ -198,7 +215,7 @@ void Player::SpawnAnimation()
 void Player::Die()
 {
 	_lives--;
-	_State = DYING;
+	SetState(DYING);
 	PlaySound(2);
 }
 
@@ -206,10 +223,11 @@ void Player::Revive()
 {
 	_isSpawned = false;
 	_player.setSize(Vector2f(_width, _height));
-	_State = ALIVE;
+	SetState(ALIVE);
+	cout << "[Player] Player has been revived " << endl;
 }
 
-
+//Play sounds depending on the player's animation
 void Player::PlaySound(int sound)
 {
 	switch (sound)
@@ -232,7 +250,7 @@ sf::RectangleShape Player::GetPlayer()
 
 int Player::GetPlayerStatus()
 {
-	return _State;
+	return _state;
 }
 
 int Player::GetLive()
@@ -252,7 +270,7 @@ sf::RectangleShape Player::GetHitbox()
 
 void Player::Draw(sf::RenderWindow& window)
 {
-	switch (_State)
+	switch (_state)
 	{
 	case SPAWNING:
 		window.draw(_spawnPlayer);
@@ -267,15 +285,17 @@ void Player::Draw(sf::RenderWindow& window)
 		window.draw(_explodePlayer);
 		break;
 	}
+	//Uncomment this to draw the player's collision box
 	//window.draw(_hitbox);
 }
 
+//If ALIVE, moves the player by 10 pixels depending on the keyboard's given direction //------------------TO DO: REMOVE DEBUG DIE KEY
 void Player::Move()
 {
 	Vector2f currentPosition = _player.getPosition();
 	Vector2f nextPosition;
 
-	if (_State == ALIVE)
+	if (_state == ALIVE)
 	{
 		_time = _clock.getElapsedTime();
 		if (_time.asMilliseconds() >= 10.0f) {
@@ -285,9 +305,9 @@ void Player::Move()
 				_player.move(-10, 0);
 				MoveCol(-10);
 				nextPosition = _player.getPosition();
-				if (nextPosition.x < _leftBorder + (_width * sizeMultiplier) / 2)					//If the next position is within a wall, go back to the previous one
+				if (nextPosition.x < _leftBorder + (_width * sizeMultiplier) / 2)
 				{
-					_player.setPosition(currentPosition.x, currentPosition.y);
+					_player.setPosition(currentPosition.x, currentPosition.y);	//If the next position is within a wall, go back to the previous one
 					MoveCol(+10);
 				}
 			}
@@ -306,7 +326,7 @@ void Player::Move()
 			}
 			_clock.restart();
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))	//If the 'A' key is pressed, makes the player move by 10 units to the left
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
 			{
 				Die();
 			}
@@ -314,6 +334,7 @@ void Player::Move()
 	}
 }
 
+//Move the player's hitbox
 void Player::MoveCol(int value)
 {
 	_hitbox.move(value, 0);

@@ -1,17 +1,23 @@
+/*====================================
+// Filename : UserInterface.h
+// Description : This file contains the definition of the UserInterface class
+//				 which contains the stats' texts and icons and logic
+// Author : Samy Larochelle
+// Date : May 16th, 2024
+====================================*/
 #pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics/Font.hpp>
+
 class UserInterface
 {
 private:
 	//Attributes
 	sf::Font font;
-
-	//In-Game Stats
 	sf::RectangleShape _liveIcon;
-	sf::Texture _liveTexture;
+	sf::Texture _liveIconTexture;
 	sf::Text _livesText;
 	sf::Text _lives;
 	sf::Text _score;
@@ -20,24 +26,17 @@ private:
 	sf::Text _highscoreText;
 	sf::Text _level;
 	sf::Text _levelText;
-	///Shadow
-	sf::RectangleShape _SliveIcon;
-	sf::Texture _SliveTexture;
-	sf::Text _SlivesText;
-	sf::Text _Slives;
-	sf::Text _Sscore;
-	sf::Text _SscoreText;
-	sf::Text _Shighscore;
-	sf::Text _ShighscoreText;
-	sf::Text _Slevel;
-	sf::Text _SlevelText;
-
-	//Interactble Menu
-	sf::Text _firstOption;
-	sf::Text _SfirstOption;
-	sf::Text _secondOption;
-	sf::Text _SsecondOption;
-
+	///Shadows
+	sf::RectangleShape _liveIconShadow;
+	sf::Texture _liveIconTextureShadow;
+	sf::Text _livesTextShadow;
+	sf::Text _livesShadow;
+	sf::Text _scoreShadow;
+	sf::Text _scoreTextShadow;
+	sf::Text _highscoreShadow;
+	sf::Text _highscoreTextShadow;
+	sf::Text _levelShadow;
+	sf::Text _levelTextShadow;
 public:
 	//Constructor
 	UserInterface();

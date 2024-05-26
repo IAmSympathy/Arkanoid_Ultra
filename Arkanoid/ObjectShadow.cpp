@@ -1,4 +1,13 @@
+/*====================================
+// Filename : ObjectShadow.cpp
+// Description : This file contains the implementation of the ObjectShadow class
+//				 which contains the ball and player's shadows logic
+// Author : Samy Larochelle
+// Date : May 13th, 2024
+====================================*/
 #include "ObjectShadow.h"
+using namespace sf;
+using namespace std;
 
 ObjectShadow::ObjectShadow()
 {
@@ -8,9 +17,10 @@ ObjectShadow::ObjectShadow()
 ObjectShadow::ObjectShadow(std::string objet)
 {
 	_type = objet;
+	cout << "[ObjectShadow] Shadow with type " << objet << " has been created" << endl;
 }
 
-bool ObjectShadow::SetTexture()
+bool ObjectShadow::LoadTextures()
 {
 	if (_type == "Ball")
 	{
@@ -39,6 +49,7 @@ bool ObjectShadow::SetTexture()
 void ObjectShadow::SetType(std::string type)
 {
 	_type = type;
+	cout << "[ObjectShadow] Type has been changed to " << type << endl;
 }
 
 void ObjectShadow::draw(sf::RenderWindow& window)

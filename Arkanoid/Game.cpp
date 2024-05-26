@@ -1,4 +1,14 @@
+/*====================================
+// Filename : Game.cpp
+// Description : This file contains the implementation of the Game class
+//				 which contains the game's logic and the interaction between actors
+// Author : Samy Larochelle
+// Date : May 13th, 2024
+====================================*/
 #include "Game.h"
+using namespace sf;
+using namespace std;
+
 Game::Game()
 {
 	_level = 1;
@@ -10,7 +20,9 @@ Game::Game()
 	_isDead = false;
 	_SpawnSoundOnce = false;
 	_paused = false;
-	escapeIsPressed = false;
+	escapeKeyIsPressed = false;
+
+	_music.setLoop(true);
 
 	//Shadows
 	_playerShadow.SetType("Player");
@@ -26,17 +38,19 @@ Game::Game()
 	_background.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
 	_border.setPosition(0, 0);		// On définit sa position
 	_border.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
-	_borderS.setPosition(0, 0);		// On définit sa position
-	_borderS.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
+	_borderShadow.setPosition(0, 0);		// On définit sa position
+	_borderShadow.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
 	_borderBG.setPosition(0, 0);		// On définit sa position
 	_borderBG.setSize(Vector2f(1920, 1080));	// On définit ses dimensions
 
-	_ball.SetTexture();
-	_ballShadow.SetTexture();
-	_player.SetTexture();
-	_playerShadow.SetTexture();
+	_ball.LoadTexture();
+	_ballShadow.LoadTextures();
+	_player.LoadTextures();
+	_playerShadow.LoadTextures();
+	cout << "[Game] Game has been created " << endl;
 }
 
+//Starts a new level
 void Game::StartLevel(int &level, int &section, int &episode)
 {
 	_level = level;
@@ -52,35 +66,45 @@ void Game::StartLevel(int &level, int &section, int &episode)
 		section = 5;
 	SetMusic(section);
 	_music.setVolume(13.f);
-	_music.play();
-	SetBackground(episode, section);
-	SetBorder(NORMAL);
+	LoadBackground(episode, section);
+	LoadBorder(NORMAL);
 
 	_ball.SetBorders(_leftBorder, _rightBorder, _upBorder);
 	_player.SetBorders(_leftBorder, _rightBorder, _upBorder);
 	_player.Reset();
+	cout << "[Game] Game started at Level " << level << ", Section "<< section << ", Episode " << episode << endl;
 }
 
-void Game::Play()
+//Main game logic//----------------------------TO-DO: REMOVE DEBUG SCORE KEY
+void Game::Play() 
 {
+	if (_ball.GetStartMusic() == true)
+	{
+		_ball.SetStartMusic(false);
+		_music.play();
+	}
+
 	if (_paused == false)
 	{
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
 		{
 			_score++;
 		}
-		//Vérification mort
+		//Death verifications
 		if (_player.GetPlayerStatus() != ALIVE)
-			_ball.Reset(2);
+		{
+			if (_ball.GetState() != 2)
+				_ball.SetState(2);
+		}
 		else if (_ball.GetState() == 2)
 			_player.Die();
 
-		//Actions de la balle
+		//Ball's action
 		_ball.CheckCollision(CheckCollision(_player, _ball));
 		_ball.Move();
-		_ballShadow.move(_ball.getBall());
+		_ballShadow.move(_ball.GetBall());
 
-		//Actions du joueur
+		//Player's actions
 		_player.Move();
 		_playerShadow.move(_player.GetPlayer());
 		if (_ball.GetState() == 0)
@@ -90,20 +114,22 @@ void Game::Play()
 			_music.stop();
 	}
 	
-	if (_player.GetPlayerStatus() == ALIVE)
+	if (_player.GetPlayerStatus() == ALIVE) //If the player is ALIVE, allow to pause the game
 	{
-		if (escapeIsPressed == false)
+		if (escapeKeyIsPressed == false)
 		{
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			{
-				escapeIsPressed = true;
+				cout << "[Game::Keybind] Escape key has been pressed" << endl;
+				escapeKeyIsPressed = true;
 				if (_paused == false)
 					_paused = true;
 			}
 		}
 	}
+
 	int playerStatus = _player.GetPlayerStatus();
-	switch (playerStatus)
+	switch (playerStatus)		//Plays animation depending on the player's state
 	{
 	case SPAWNING:
 		if (_player.GetLive() > 0)
@@ -135,11 +161,13 @@ void Game::Play()
 	}
 }
 
+//Resets the game stats when going back to the main menu
 void Game::Reset()
 {
 	_music.stop();
 	_score = 0;
 	_lives = 3;
+	_ball.Reset();
 }
 
 int Game::GetLives()
@@ -172,7 +200,8 @@ bool Game::GetPaused()
 	return _paused;
 }
 
-bool Game::SetBackground(int &episode, int &section)
+//Load backgrounds based on the secions (every 8 levels) and episodes
+bool Game::LoadBackground(int &episode, int &section)
 {
 	switch (episode)
 	{
@@ -268,7 +297,8 @@ bool Game::SetBackground(int &episode, int &section)
 	_background.setTexture(&_textureBackground);
 }
 
-bool Game::SetBorder(int size)
+//Load and set borders based on the level border size
+bool Game::LoadBorder(int size)
 {
 	switch (size)
 	{
@@ -277,9 +307,9 @@ bool Game::SetBorder(int size)
 			return false;
 		_border.setTexture(&_textureBorder);
 
-		if (!_textureBorderS.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder_S.png"))
+		if (!_textureBorderShadow.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder_S.png"))
 			return false;
-		_borderS.setTexture(&_textureBorderS);
+		_borderShadow.setTexture(&_textureBorderShadow);
 
 		if (!_textureBorderBG.loadFromFile("ArkanoidUltra_Data/Sprites/Level/LevelBorder_BG.png"))
 			return false;
@@ -291,6 +321,7 @@ bool Game::SetBorder(int size)
 	}
 }
 
+//Load music based on the section and episodes //-----------------------TO DO: add music for every section and episodes
 bool Game::SetMusic(int section)
 {
 	switch (section)
@@ -308,11 +339,12 @@ void Game::SetPaused(bool value)
 	_paused = value;
 }
 
+//Checks if a key is released, so it can be pressed again
 void Game::IsKeyPressed(Event event)
 {
 	if (event.type == sf::Event::KeyReleased) {
 		if (event.key.code == sf::Keyboard::Escape) {
-			escapeIsPressed = false;
+			escapeKeyIsPressed = false;
 		}
 	}
 }
@@ -322,17 +354,18 @@ void Game::checkLives(Player &player)
 	_lives = player.GetLive();
 }
 
+//CHeck if there's a collision between the playr and the ball by comparing both's global bounds
 double Game::CheckCollision(Player player, Ball ball)
 {
 	Vector2f playerPosition = _player.GetPlayer().getPosition();
-	Vector2f ballPosition = _ball.getBall().getPosition();
+	Vector2f ballPosition = _ball.GetBall().getPosition();
 	if(ballPosition.y - 2 * 4 )
-	if (_ball.getBall().getGlobalBounds().intersects(_player.GetHitbox().getGlobalBounds()))
+	if (_ball.GetBall().getGlobalBounds().intersects(_player.GetHitbox().getGlobalBounds()))
 	{
-		//Calcul de la différence entre les positions
+		//Calculate length between the twoactors
 		double dx = ballPosition.x - playerPosition.x;
 		double dy = ballPosition.y - 2*4 - playerPosition.y;
-		//Calcul l'angle
+		//Calculate the vector's angle
 		double theta = atan2(dy, dx) * 180.0 / M_PI;
 		if (theta < 0)
 			theta *= -1;
@@ -346,7 +379,7 @@ void Game::Draw(sf::RenderWindow& window)
 {
 	window.draw(_background);
 	window.draw(_borderBG);
-	window.draw(_borderS);
+	window.draw(_borderShadow);
 	if (_player.GetPlayerStatus() == ALIVE)
 	{
 		_playerShadow.draw(window);

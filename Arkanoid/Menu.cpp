@@ -1,25 +1,38 @@
+/*====================================
+// Filename : Menu.h
+// Description : This file contains the implementation of the Menu class
+//				 which contains the menu logic, states and screens
+// Author : Samy Larochelle
+// Date : May 13th, 2024
+====================================*/
 #include "Menu.h"
+using namespace sf;
+using namespace std;
 
 Menu::Menu()
 {
-	//Variables
+	//Attributes
 	_state = TITLE;
 	_option = 1;
 	_knownLevels = 2;
+	//Checks
 	escapeIsPressed = false;
 	enterIsPressed = false;
 	upIsPressed = false;
 	downIsPressed = false;
 	leftIsPressed = false;
 	rightIsPressed = false;
+	//Text Positions
 	_chooseEpisodeX = 0;
+	_chooseEpisodeY = 0;
 	_firstOptionY = 0;
 	_secondOptionY = 0;
 	_thirdOptionY = 0;
 	_fourthOptionY = 0;
 	_fifthOptionY = 0;
 
-	//Load Ressources
+	//Make the music loop
+	_music.setLoop(true);
 
 
 	//Images
@@ -42,41 +55,38 @@ Menu::Menu()
 	_Slogo.setSize(Vector2f(193, 41));
 	_Slogo.setScale(4, 4);
 
-	//--Menu Options
+	//Menu Options
 	_firstOption.setString("OPTION 1");
 	_firstOption.setFont(font);
-	_SfirstOption.setString("OPTION 1");
-	_SfirstOption.setFont(font);
-	_SfirstOption.setFillColor(Color::Black);
+	_firstOptionShadow.setString("OPTION 1");
+	_firstOptionShadow.setFont(font);
+	_firstOptionShadow.setFillColor(Color::Black);
 	_secondOption.setString("OPTION 2");
 	_secondOption.setFont(font);
-	_SsecondOption.setString("OPTION 2");
-	_SsecondOption.setFont(font);
-	_SsecondOption.setFillColor(Color::Black);
-
+	_secondOptionShadow.setString("OPTION 2");
+	_secondOptionShadow.setFont(font);
+	_secondOptionShadow.setFillColor(Color::Black);
 	_thirdOption.setString("OPTION 3");
 	_thirdOption.setFont(font);
-	_SthirdOption.setString("OPTION 3");
-	_SthirdOption.setFont(font);
-	_SthirdOption.setFillColor(Color::Black);
+	_thirdOptionShadow.setString("OPTION 3");
+	_thirdOptionShadow.setFont(font);
+	_thirdOptionShadow.setFillColor(Color::Black);
 	_fourthOption.setString("OPTION 4");
 	_fourthOption.setFont(font);
-	_SfourthOption.setString("OPTION 4");
-	_SfourthOption.setFont(font);
-	_SfourthOption.setFillColor(Color::Black);
-
+	_fourthOptionShadow.setString("OPTION 4");
+	_fourthOptionShadow.setFont(font);
+	_fourthOptionShadow.setFillColor(Color::Black);
 	_fifthOption.setString("OPTION 5");
 	_fifthOption.setFont(font);
-	_SfifthOption.setString("OPTION 5");
-	_SfifthOption.setFont(font);
-	_SfifthOption.setFillColor(Color::Black);
+	_fifthOptionShadow.setString("OPTION 5");
+	_fifthOptionShadow.setFont(font);
+	_fifthOptionShadow.setFillColor(Color::Black);
 	//Episodes Selection
-	_chooseEpisode.setString("CHOOSE XXX");
-	_chooseEpisode.setFont(font);
-	_SchooseEpisode.setString("CHOOSE XXX");
-	_SchooseEpisode.setFont(font);
-	_SchooseEpisode.setFillColor(Color::Black);
-
+	_headerText.setString("CHOOSE XXX");
+	_headerText.setFont(font);
+	_headerTextShadow.setString("CHOOSE XXX");
+	_headerTextShadow.setFont(font);
+	_headerTextShadow.setFillColor(Color::Black);
 	_episodePreview.setPosition(1250, 600);
 	_episodePreview.setOrigin(859 / 2, 627 / 2);
 	_episodePreview.setSize(Vector2f(803, 570));
@@ -94,18 +104,23 @@ Menu::Menu()
 	_previewRight.setOrigin(803 / 2, 570 / 2);
 	_previewRight.setSize(Vector2f(803, 570));
 	_previewRight.setScale(0.7, 0.7);
-
+	_previewRightLocked.setPosition(1770, 550);
+	_previewRightLocked.setOrigin(803 / 2, 570 / 2);
+	_previewRightLocked.setSize(Vector2f(803, 570));
+	_previewRightLocked.setScale(0.7, 0.7);
 	_levelNumber.setString("LEVEL X");
 	_levelNumber.setFont(font);
 	_levelNumber.setPosition(740, 200);
 	_levelNumber.setFillColor(Color::White);
-	_SlevelNumber.setString("LEVEL X");
-	_SlevelNumber.setFont(font);
-	_SlevelNumber.setPosition(740 + 8, 200 + 8);
-	_SlevelNumber.setFillColor(Color::Black);
+	_levelNumberShadow.setString("LEVEL X");
+	_levelNumberShadow.setFont(font);
+	_levelNumberShadow.setPosition(740 + 8, 200 + 8);
+	_levelNumberShadow.setFillColor(Color::Black);
+
+	cout << "[Menu] Menu has been created " << endl;
 }
 
-bool Menu::loadLogo()
+bool Menu::LoadLogo()
 {
 	if (!_logoTexture.loadFromFile("ArkanoidUltra_Data/Sprites/Menu/Logo.png"))
 	{
@@ -121,7 +136,7 @@ bool Menu::loadLogo()
 	return true;
 }
 
-bool Menu::loadFont()
+bool Menu::LoadFont()
 {
 	if (!font.loadFromFile("ArkanoidUltra_Data/Font/nintendo-nes-font.ttf"))
 	{
@@ -130,7 +145,7 @@ bool Menu::loadFont()
 	return true;
 }
 
-bool Menu::SetMusic()
+bool Menu::LoadMusic()
 {
 	if (!_buffer.loadFromFile("ArkanoidUltra_Data/Musics/Menu.wav"))
 		return false;
@@ -138,7 +153,7 @@ bool Menu::SetMusic()
 	return true;
 }
 
-bool Menu::SetSounds()
+bool Menu::LoadSounds()
 {
 	if (!_confirmBuffer.loadFromFile("ArkanoidUltra_Data/Sounds/MenuAccept.wav"))
 		return false;
@@ -149,7 +164,7 @@ bool Menu::SetSounds()
 	return true;
 }
 
-bool Menu::SetBackground()
+bool Menu::LoadBackground()
 {
 	if (!_textureBackground.loadFromFile("ArkanoidUltra_Data/Sprites/Level/MenuBG.png"))
 		return false;
@@ -162,11 +177,13 @@ bool Menu::SetBackground()
 	return true;
 }
 
-void Menu::Reset(int state)
+//Set the state to the parameter one, resets the option variable to 1 and change the maxOption depending on the menu state
+void Menu::SetState(int state)
 {
 	_option = 1;
 	_state = state;
-	updateMaxOptionNumber();
+	cout << "[Menu] Switching state to " << state << endl;
+	UpdateMaxOptionNumber();
 }
 
 int Menu::GetState()
@@ -174,7 +191,8 @@ int Menu::GetState()
 	return _state;
 }
 
-void Menu::updateMaxOptionNumber()
+//Changes the maxOption depending on the menustate
+void Menu::UpdateMaxOptionNumber()
 {
 	switch (_state)
 	{
@@ -191,81 +209,83 @@ void Menu::updateMaxOptionNumber()
 		_maxOption = 2;
 		break;
 	}
+	cout << "[Menu] Max Option is now "<< _maxOption << endl;
 }
 
-void Menu::updateText(int level)
+//Changes the text variable's string depending on the menu state
+void Menu::UpdateText(int level)
 {
 	switch (_state)
 	{
 	case TITLE:
 		_firstOption.setString("PLAY");
 		_secondOption.setString("EXIT");
-		_SfirstOption.setString("PLAY");
-		_SsecondOption.setString("EXIT");
+		_firstOptionShadow.setString("PLAY");
+		_secondOptionShadow.setString("EXIT");
 		_firstOptionY = 500;
 		_secondOptionY = 600;
 		break;
 	case EPISODES:
 		//Text
-		_chooseEpisode.setString("CHOOSE AN EPISODE");
-		_SchooseEpisode.setString("CHOOSE AN EPISODE");
+		_headerText.setString("CHOOSE AN EPISODE");
+		_headerTextShadow.setString("CHOOSE AN EPISODE");
 		_firstOption.setString("EPISODE 1");
 		_secondOption.setString("EPISODE 2");
 		_thirdOption.setString("EPISODE 3");
 		_fourthOption.setString("EPISODE 4");
 		_fifthOption.setString("HOW TO PLAY");
-		_SfirstOption.setString("EPISODE 1");
-		_SsecondOption.setString("EPISODE 2");
-		_SthirdOption.setString("EPISODE 3");
-		_SfourthOption.setString("EPISODE 4");
-		_SfifthOption.setString("HOW TO PLAY");
+		_firstOptionShadow.setString("EPISODE 1");
+		_secondOptionShadow.setString("EPISODE 2");
+		_thirdOptionShadow.setString("EPISODE 3");
+		_fourthOptionShadow.setString("EPISODE 4");
+		_fifthOptionShadow.setString("HOW TO PLAY");
 		//
 		_firstOption.setPosition(500, 460);
-		_SfirstOption.setPosition(500 + 8, 460 + 8);
+		_firstOptionShadow.setPosition(500 + 8, 460 + 8);
 		_secondOption.setPosition(500, 530);
-		_SsecondOption.setPosition(500 + 8, 530 + 8);
+		_secondOptionShadow.setPosition(500 + 8, 530 + 8);
 		_thirdOption.setPosition(500, 600);
-		_SthirdOption.setPosition(500 + 8, 600 + 8);
+		_thirdOptionShadow.setPosition(500 + 8, 600 + 8);
 		_fourthOption.setPosition(500, 670);
-		_SfourthOption.setPosition(500 + 8, 670 + 8);
+		_fourthOptionShadow.setPosition(500 + 8, 670 + 8);
 		_fifthOption.setPosition(532, 760);
-		_SfifthOption.setPosition(532 + 8, 760 + 8);
+		_fifthOptionShadow.setPosition(532 + 8, 760 + 8);
 
 		_chooseEpisodeX = 610;
 		_chooseEpisodeY = 230;
 		break;
 	case LEVELS:
-		_chooseEpisode.setString("CHOOSE A LEVEL");
-		_SchooseEpisode.setString("CHOOSE A LEVEL");
+		_headerText.setString("CHOOSE A LEVEL");
+		_headerTextShadow.setString("CHOOSE A LEVEL");
 		_levelNumber.setString("LEVEL ");
 		number = _levelNumber.getString();
 		number.append(to_string(level));
 		_levelNumber.setString(number);
-		_SlevelNumber.setString(number);
+		_levelNumberShadow.setString(number);
 		_chooseEpisodeX = 1920 / 2;
 		_chooseEpisodeY = 230;
 		break;
 	case GAMEOVER:
 		_firstOption.setString("YES");
 		_secondOption.setString("NO");
-		_SfirstOption.setString("YES");
-		_SsecondOption.setString("NO");
-		_chooseEpisode.setString("CONTINUE?");
-		_SchooseEpisode.setString("CONTINUE?");
+		_firstOptionShadow.setString("YES");
+		_secondOptionShadow.setString("NO");
+		_headerText.setString("CONTINUE?");
+		_headerTextShadow.setString("CONTINUE?");
 
 		_firstOption.setPosition(1920 / 2 - 100, 800);
-		_SfirstOption.setPosition(1920 / 2 - 100 + 8, 800 + 8);
+		_firstOptionShadow.setPosition(1920 / 2 - 100 + 8, 800 + 8);
 		_secondOption.setPosition(1920 / 2 + 100, 800);
-		_SsecondOption.setPosition(1920 / 2 + 100 + 8, 800 + 8);
+		_secondOptionShadow.setPosition(1920 / 2 + 100 + 8, 800 + 8);
 		_chooseEpisodeY = 700;
 		break;
 	case PAUSE:
 		_firstOption.setString("RESUME");
 		_secondOption.setString("QUIT");
-		_SfirstOption.setString("RESUME");
-		_SsecondOption.setString("QUIT");
-		_chooseEpisode.setString("-PAUSE-");
-		_SchooseEpisode.setString("-PAUSE-");
+		_firstOptionShadow.setString("RESUME");
+		_secondOptionShadow.setString("QUIT");
+		_headerText.setString("-PAUSE-");
+		_headerTextShadow.setString("-PAUSE-");
 
 		_firstOptionY = 550;
 		_secondOptionY = 620;
@@ -275,57 +295,57 @@ void Menu::updateText(int level)
 
 	//--Center Text Horizontally
 	//Choose Episode
-	textRect = _chooseEpisode.getLocalBounds();
-	_chooseEpisode.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-	textRect = _SchooseEpisode.getLocalBounds();
-	_chooseEpisode.setPosition(sf::Vector2f(_chooseEpisodeX, _chooseEpisodeY));
-	_SchooseEpisode.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-	_SchooseEpisode.setPosition(sf::Vector2f(_chooseEpisodeX + 8, _chooseEpisodeY + 8));
+	textRect = _headerText.getLocalBounds();
+	_headerText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+	textRect = _headerTextShadow.getLocalBounds();
+	_headerText.setPosition(sf::Vector2f(_chooseEpisodeX, _chooseEpisodeY));
+	_headerTextShadow.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+	_headerTextShadow.setPosition(sf::Vector2f(_chooseEpisodeX + 8, _chooseEpisodeY + 8));
 	//Level Number
 	textRect = _levelNumber.getLocalBounds();
 	_levelNumber.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-	textRect = _SlevelNumber.getLocalBounds();
+	textRect = _levelNumberShadow.getLocalBounds();
 	_levelNumber.setPosition(sf::Vector2f(1920 / 2, 865));
-	_SlevelNumber.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-	_SlevelNumber.setPosition(sf::Vector2f(1920 / 2 + 8, 865 + 8));
+	_levelNumberShadow.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+	_levelNumberShadow.setPosition(sf::Vector2f(1920 / 2 + 8, 865 + 8));
 	//Options
 	//1
 	textRect = _firstOption.getLocalBounds();
 	_firstOption.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-	textRect = _SfirstOption.getLocalBounds();
-	_SfirstOption.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+	textRect = _firstOptionShadow.getLocalBounds();
+	_firstOptionShadow.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
 	//2
 	textRect = _secondOption.getLocalBounds();
 	_secondOption.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-	textRect = _SsecondOption.getLocalBounds();
-	_SsecondOption.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+	textRect = _secondOptionShadow.getLocalBounds();
+	_secondOptionShadow.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
 	//3
 	textRect = _thirdOption.getLocalBounds();
 	_thirdOption.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-	textRect = _SthirdOption.getLocalBounds();
-	_SthirdOption.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+	textRect = _thirdOptionShadow.getLocalBounds();
+	_thirdOptionShadow.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
 	//4
 	textRect = _fourthOption.getLocalBounds();
 	_fourthOption.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-	textRect = _SfourthOption.getLocalBounds();
-	_SfourthOption.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+	textRect = _fourthOptionShadow.getLocalBounds();
+	_fourthOptionShadow.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
 	//5
 	textRect = _fifthOption.getLocalBounds();
 	_fifthOption.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-	textRect = _SfifthOption.getLocalBounds();
-	_SfifthOption.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+	textRect = _fifthOptionShadow.getLocalBounds();
+	_fifthOptionShadow.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
 	if (_state == TITLE || _state == PAUSE)
 	{
 		_firstOption.setPosition(sf::Vector2f(1920 / 2, _firstOptionY));
-		_SfirstOption.setPosition(sf::Vector2f(1920 / 2 + 8, _firstOptionY + 8));
+		_firstOptionShadow.setPosition(sf::Vector2f(1920 / 2 + 8, _firstOptionY + 8));
 		_secondOption.setPosition(sf::Vector2f(1920 / 2, _secondOptionY));
-		_SsecondOption.setPosition(sf::Vector2f(1920 / 2 + 8, _secondOptionY + 8));
+		_secondOptionShadow.setPosition(sf::Vector2f(1920 / 2 + 8, _secondOptionY + 8));
 		_thirdOption.setPosition(sf::Vector2f(1920 / 2, _thirdOptionY));
-		_SthirdOption.setPosition(sf::Vector2f(1920 / 2 + 8, _thirdOptionY + 8));
+		_thirdOptionShadow.setPosition(sf::Vector2f(1920 / 2 + 8, _thirdOptionY + 8));
 		_fourthOption.setPosition(sf::Vector2f(1920 / 2, _fourthOptionY));
-		_SfourthOption.setPosition(sf::Vector2f(1920 / 2 + 8, _fourthOptionY + 8));
+		_fourthOptionShadow.setPosition(sf::Vector2f(1920 / 2 + 8, _fourthOptionY + 8));
 		_fifthOption.setPosition(sf::Vector2f(1920 / 2, _fourthOptionY));
-		_SfifthOption.setPosition(sf::Vector2f(1920 / 2 + 8, _fourthOptionY + 8));
+		_fifthOptionShadow.setPosition(sf::Vector2f(1920 / 2 + 8, _fourthOptionY + 8));
 	}
 }
 
@@ -340,53 +360,54 @@ void Menu::Draw(sf::RenderWindow& window)
 		window.draw(_textBG);
 		window.draw(_Slogo);
 		window.draw(_logo);
-		window.draw(_SfirstOption);
-		window.draw(_SsecondOption);
+		window.draw(_firstOptionShadow);
+		window.draw(_secondOptionShadow);
 		window.draw(_firstOption);
 		window.draw(_secondOption);
 		break;
 	case EPISODES:
 		window.draw(_textBG);
-		window.draw(_SchooseEpisode);
-		window.draw(_chooseEpisode);
-		window.draw(_SfirstOption);
-		window.draw(_SsecondOption);
+		window.draw(_headerTextShadow);
+		window.draw(_headerText);
+		window.draw(_firstOptionShadow);
+		window.draw(_secondOptionShadow);
 		window.draw(_firstOption);
 		window.draw(_secondOption);
-		window.draw(_SthirdOption);
+		window.draw(_thirdOptionShadow);
 		window.draw(_thirdOption);
-		window.draw(_SfourthOption);
+		window.draw(_fourthOptionShadow);
 		window.draw(_fourthOption);
-		window.draw(_SfifthOption);
+		window.draw(_fifthOptionShadow);
 		window.draw(_fifthOption);
 		window.draw(_episodePreview);
 		break;
 	case LEVELS:
 		window.draw(_textBG);
-		window.draw(_SchooseEpisode);
-		window.draw(_chooseEpisode);
+		window.draw(_headerTextShadow);
+		window.draw(_headerText);
 		window.draw(_previewLeft);
 		window.draw(_previewMiddle);
 		window.draw(_previewRight);
-		window.draw(_SlevelNumber);
+		window.draw(_previewRightLocked);
+		window.draw(_levelNumberShadow);
 		window.draw(_levelNumber);
 		window.draw(_levelOverlay);
 		break;
 	case GAMEOVER:
 		window.draw(_textBG);
-		window.draw(_SchooseEpisode);
-		window.draw(_chooseEpisode);
-		window.draw(_SfirstOption);
-		window.draw(_SsecondOption);
+		window.draw(_headerTextShadow);
+		window.draw(_headerText);
+		window.draw(_firstOptionShadow);
+		window.draw(_secondOptionShadow);
 		window.draw(_firstOption);
 		window.draw(_secondOption);
 		break;
 	case PAUSE:
 		window.draw(_textBG);
-		window.draw(_SchooseEpisode);
-		window.draw(_chooseEpisode);
-		window.draw(_SfirstOption);
-		window.draw(_SsecondOption);
+		window.draw(_headerTextShadow);
+		window.draw(_headerText);
+		window.draw(_firstOptionShadow);
+		window.draw(_secondOptionShadow);
 		window.draw(_firstOption);
 		window.draw(_secondOption);
 	}
@@ -397,7 +418,8 @@ int Menu::GetOption()
 	return _option;
 }
 
-void Menu::updateTextBG()
+//Changes the text background's size depending on the menu state
+void Menu::UpdateTextBG()
 {
 	switch (_state)
 	{
@@ -433,50 +455,79 @@ void Menu::updateTextBG()
 
 void Menu::Initialize()
 {
-	Reset(TITLE);
-	SetMusic();
-	SetSounds();
-	loadFont();
-	loadLogo();
-	loadLevelPreview(_option);
-	loadEpisodePreview(_option);
-	SetBackground();
+	SetState(TITLE);
+	HighlightOption();
+	LoadMusic();
+	LoadSounds();
+	LoadFont();
+	LoadLogo();
+	LoadLevelPreview(_option);
+	LoadEpisodePreview(_option);
+	LoadBackground();
 	_music.setVolume(13.f);
 	_music.play();
 }
 
+//Checks if a key has been released so it can be pressed again
 void Menu::IsKeyPressed(Event event)
 {
 	if (event.type == sf::Event::KeyReleased) {
 		if (event.key.code == sf::Keyboard::Enter || event.key.code == sf::Keyboard::Space) {
-			enterIsPressed = false;
+			if (enterIsPressed == true) 
+			{
+				enterIsPressed = false;
+				cout << "[Menu::Keybind] Enter key released" << endl;
+
+			}
 		}
 		if (event.key.code == sf::Keyboard::Escape) {
-			escapeIsPressed = false;
+			if (escapeIsPressed == true) 
+			{
+				escapeIsPressed = false;
+				cout << "[Menu::Keybind] Escape key released" << endl;
+			}
 		}
 		if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
-			upIsPressed = false;
+			if (upIsPressed == true)
+			{
+				upIsPressed = false;
+				cout << "[Menu::Keybind] Up or W key released" << endl;
+			}
+
 		}
 		if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
-			downIsPressed = false;
+			if (downIsPressed == true)
+			{
+				downIsPressed = false;
+				cout << "[Menu::Keybind] Down or S key released" << endl;
+			}
 		}
 		if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
-			leftIsPressed = false;
+			if (leftIsPressed == true)
+			{
+				leftIsPressed = false;
+				cout << "[Menu::Keybind] Left or A key released" << endl;
+			}
+
 		}
 		if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
-			rightIsPressed = false;
+			if (rightIsPressed == true)
+			{
+				rightIsPressed = false;
+				cout << "[Menu::Keybind] Right or D key released" << endl;
+			}
 		}
 	}
 }
 
-void Menu::HighlightOption(sf::RenderWindow& window)
+//Change the text variables' color depending on the option's value
+void Menu::HighlightOption()
 {
-
 	switch (_option)
 	{
 	case 1:
 		_firstOption.setFillColor(Color::White);
-
+		cout << "[Menu::Text] Option 1 has been highlighted" << endl;
 		_secondOption.setFillColor(sf::Color(67, 68, 66));
 		_thirdOption.setFillColor(sf::Color(67, 68, 66));
 		_fourthOption.setFillColor(sf::Color(67, 68, 66));
@@ -484,6 +535,7 @@ void Menu::HighlightOption(sf::RenderWindow& window)
 		break;
 	case 2:
 		_secondOption.setFillColor(Color::White);
+		cout << "[Menu::Text] Option 2 has been highlighted" << endl;
 		if (_state == GAMEOVER || _state == PAUSE || _state == TITLE)
 			_secondOption.setFillColor(Color::Red);
 		_firstOption.setFillColor(sf::Color(67, 68, 66));
@@ -493,7 +545,7 @@ void Menu::HighlightOption(sf::RenderWindow& window)
 		break;
 	case 3:
 		_thirdOption.setFillColor(Color::White);
-
+		cout << "[Menu::Text] Option 3 has been highlighted" << endl;
 		_firstOption.setFillColor(sf::Color(67, 68, 66));
 		_secondOption.setFillColor(sf::Color(67, 68, 66));
 		_fourthOption.setFillColor(sf::Color(67, 68, 66));
@@ -501,7 +553,7 @@ void Menu::HighlightOption(sf::RenderWindow& window)
 		break;
 	case 4:
 		_fourthOption.setFillColor(Color::White);
-
+		cout << "[Menu::Text] Option 4 has been highlighted" << endl;
 		_firstOption.setFillColor(sf::Color(67, 68, 66));
 		_secondOption.setFillColor(sf::Color(67, 68, 66));
 		_thirdOption.setFillColor(sf::Color(67, 68, 66));
@@ -509,7 +561,7 @@ void Menu::HighlightOption(sf::RenderWindow& window)
 		break;
 	case 5:
 		_fifthOption.setFillColor(Color::White);
-
+		cout << "[Menu::Text] Option 5 has been highlighted" << endl;
 		_firstOption.setFillColor(sf::Color(67, 68, 66));
 		_secondOption.setFillColor(sf::Color(67, 68, 66));
 		_thirdOption.setFillColor(sf::Color(67, 68, 66));
@@ -520,6 +572,9 @@ void Menu::HighlightOption(sf::RenderWindow& window)
 
 int Menu::ChangeOption()
 {
+	UpdateTextBG();
+	UpdateText(_option);
+
 	if (_state == LEVELS)
 	{
 		if (leftIsPressed == false)
@@ -527,12 +582,13 @@ int Menu::ChangeOption()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
 				leftIsPressed = true;
+				cout << "[Menu::Keybind] Left or A key has been pressed" << endl;
 				if (_option != 1)
 				{
 					_changeSound.play();
 					_option--;
 				}
-				loadLevelPreview(_option);
+				LoadLevelPreview(_option);
 			}
 		}
 		if (rightIsPressed == false)
@@ -540,12 +596,13 @@ int Menu::ChangeOption()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
 				rightIsPressed = true;
+				cout << "[Menu::Keybind] Right or D key has been pressed" << endl;
 				if (_option != _knownLevels)
 				{
 					_changeSound.play();
 					_option++;
 				}
-				loadLevelPreview(_option);
+				LoadLevelPreview(_option);
 			}
 		}
 	}
@@ -556,12 +613,14 @@ int Menu::ChangeOption()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
 				leftIsPressed = true;
+				cout << "[Menu::Keybind] Left or A key has been pressed" << endl;
 				if (_option != 1)
 				{
 					_changeSound.play();
 					_option--;
+					HighlightOption();
 				}
-				loadLevelPreview(_option);
+				LoadLevelPreview(_option);
 			}
 		}
 		if (rightIsPressed == false)
@@ -569,12 +628,14 @@ int Menu::ChangeOption()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
 				rightIsPressed = true;
+				cout << "[Menu::Keybind] Left or A key has been pressed" << endl;
 				if (_option != _knownLevels)
 				{
 					_changeSound.play();
 					_option++;
+					HighlightOption();
 				}
-				loadLevelPreview(_option);
+				LoadLevelPreview(_option);
 			}
 		}
 	}
@@ -585,12 +646,14 @@ int Menu::ChangeOption()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
 				upIsPressed = true;
+				cout << "[Menu::Keybind] Up or W key has been pressed" << endl;
 				if (_option != _minOption)
 				{
 					_changeSound.play();
 					_option--;
+					HighlightOption();
 					if (_state == EPISODES)
-						loadEpisodePreview(_option);
+						LoadEpisodePreview(_option);
 				}
 			}
 		}
@@ -599,12 +662,14 @@ int Menu::ChangeOption()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 			{
 				downIsPressed = true;
+				cout << "[Menu::Keybind] Down or S key has been pressed" << endl;
 				if (_option != _maxOption)
 				{
 					_changeSound.play();
 					_option++;
+					HighlightOption();
 					if (_state == EPISODES)
-						loadEpisodePreview(_option);
+						LoadEpisodePreview(_option);
 				}
 			}
 		}
@@ -617,6 +682,8 @@ int Menu::ChangeOption()
 			if (_option != 5)
 				_confirmSound.play();
 			enterIsPressed = true;
+			HighlightOption();
+			cout << "[Menu::Keybind] Enter or Space key has been pressed" << endl;
 			if (_state == LEVELS)
 				_music.stop();
 			return ConfirmOption(_option);
@@ -628,20 +695,22 @@ int Menu::ChangeOption()
 		{
 			_changeSound.play();
 			_option = 1;
+			HighlightOption();
 			escapeIsPressed = true;
+			cout << "[Menu::Keybind] Escape key has been pressed" << endl;
 			switch (_state)
 			{
 			case EPISODES:
-				Reset(TITLE);
+				SetState(TITLE);
 				break;
 			case LEVELS:
-				Reset(EPISODES);
+				SetState(EPISODES);
 				break;
 			case -1:
-				Reset(PAUSE);
+				SetState(PAUSE);
 				break;
 			}
-			updateMaxOptionNumber();
+			UpdateMaxOptionNumber();
 		}
 	}
 	return 0;
@@ -652,9 +721,8 @@ int Menu::ConfirmOption(int option)
 	return option;
 }
 
-bool Menu::loadLevelPreview(int level)
+bool Menu::LoadLevelPreview(int level)
 {
-
 	std::string middlePreviewPath = _levelPreviewPath;
 	std::string leftPreviewPath = _levelPreviewPath;
 	std::string rightPreviewPath = _levelPreviewPath;
@@ -668,6 +736,7 @@ bool Menu::loadLevelPreview(int level)
 	//Left
 	if (level == 1)
 	{
+		cout << "[Menu::Load] Loading left preview for no level" << endl;
 		if (!_texturePreviewLeft.loadFromFile("ArkanoidUltra_Data/Previews/Levels/None.png"))
 		{
 			return false;
@@ -676,11 +745,13 @@ bool Menu::loadLevelPreview(int level)
 	}
 	else if (!_texturePreviewLeft.loadFromFile(leftPreviewPath))
 	{
+		cout << "[Menu::Load] Loading left preview for level " << level - 1 << endl;
 		return false;
 	}
 	_previewLeft.setTexture(&_texturePreviewLeft, true);
 
 	//Middle
+	cout << "[Menu::Load] Loading middle preview for level " << level << endl;
 	if (!_texturePreviewMiddle.loadFromFile(middlePreviewPath))
 	{
 		return false;
@@ -690,6 +761,7 @@ bool Menu::loadLevelPreview(int level)
 	//Right
 	if (level == _maxLevels)
 	{
+		cout << "[Menu::Load] Loading right preview for no level" << endl;
 		if (!_texturePreviewRight.loadFromFile("ArkanoidUltra_Data/Previews/Levels/None.png"))
 		{
 			return false;
@@ -698,31 +770,41 @@ bool Menu::loadLevelPreview(int level)
 	}
 	else if (!_texturePreviewRight.loadFromFile(rightPreviewPath))
 	{
+		cout << "[Menu::Load] Loading right preview for level " << level + 1 << endl;
 		return false;
 	}
 	_previewRight.setTexture(&_texturePreviewRight, true);
+	cout << "[Menu::Load] Next level is unlocked (" << level + 1 << ")" << endl;
+	if (!_texturePreviewRightLocked.loadFromFile("ArkanoidUltra_Data/Previews/Levels/None.png"))
+	{
+		return false;
+	}
+	_previewRightLocked.setTexture(&_texturePreviewRightLocked, true);
+
+	if (level == _knownLevels)
+	{
+		cout << "[Menu::Load] Next level is locked (" << level + 1 << ")" << endl;
+		if (!_texturePreviewRightLocked.loadFromFile("ArkanoidUltra_Data/Previews/Levels/Locked.png"))
+		{
+			return false;
+		}
+		_previewRightLocked.setTexture(&_texturePreviewRightLocked, true);
+	}
 	return true;
 }
 
-bool Menu::loadEpisodePreview(int option)
+bool Menu::LoadEpisodePreview(int option)
 {
 	std::string previewPath = _episodePreviewPath;
 	previewPath.append(to_string(option));
 	previewPath.append(_imgFileExtension);
-
-	if (option == 5)
+	_episodePreview.setScale(1, 1);
+	cout << "[Menu::Load] Loading episode preview for Episode " << option << endl;
+	if (!_textureEpisodePreview.loadFromFile(previewPath))
 	{
-		_episodePreview.setScale(0, 0);
+		return false;
 	}
-	else
-	{
-		_episodePreview.setScale(1, 1);
-		if (!_textureEpisodePreview.loadFromFile(previewPath))
-		{
-			return false;
-		}
-		_episodePreview.setTexture(&_textureEpisodePreview);
-	}
+	_episodePreview.setTexture(&_textureEpisodePreview);
 
 	return true;
 }
