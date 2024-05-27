@@ -156,6 +156,16 @@ bool Ball::LoadBounceSounds(int bounceReason)
 		if (!_buffer.loadFromFile("ArkanoidUltra_Data/Sounds/BallBrick.wav"))
 			return false;
 		break;
+	case 4:
+		cout << "[Ball::Load] Brick hit sound" << endl;
+		if (!_buffer.loadFromFile("ArkanoidUltra_Data/Sounds/BallBrickSilver.wav"))
+			return false;
+		break;
+	case 5:
+		cout << "[Ball::Load] Brick hit sound" << endl;
+		if (!_buffer.loadFromFile("ArkanoidUltra_Data/Sounds/BallBrickGold.wav"))
+			return false;
+		break;
 	}
 	_sound.setBuffer(_buffer);
 }
@@ -271,7 +281,6 @@ void Ball::CheckCollision(double angle)
 //Plays a sound depending on which collsion type it hit (wall,player, brick) and and makes the ball faster each time
 void Ball::Bounce(int bounceReason)
 {
-
 	switch (bounceReason)
 	{
 	case 1:
@@ -284,6 +293,14 @@ void Ball::Bounce(int bounceReason)
 		break;
 	case 3:
 		LoadBounceSounds(3);
+		_sound.play();
+		break;
+	case 4:
+		LoadBounceSounds(4);
+		_sound.play();
+		break;
+	case 5:
+		LoadBounceSounds(5);
 		_sound.play();
 		break;
 	}

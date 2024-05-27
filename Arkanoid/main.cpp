@@ -13,7 +13,6 @@
 #include "Brick.h"
 #include "Player.h"
 #include "Ball.h"
-
 using namespace sf;
 using namespace std;
 
@@ -28,7 +27,7 @@ int main() {
 	UserInterface userInterface;
 	int option = 0;
 	int level = 0;
-	int section = 1;
+	int section = 0;
 	int episode = 0;
 	enum state { TITLE, EPISODES, LEVELS, QUIT, INSTRUCTIONS, GAMEOVER, PAUSE };
 	enum playerStates { SPAWNING, ALIVE, DYING, EXPLODING, THROW };
@@ -51,23 +50,22 @@ int main() {
 		//Menu logic
 		if (menu.GetState() != -1)
 		{
-
 			switch (menu.GetState())
 			{
 			case TITLE:
-				if (menu.ChangeOption(episode) == 1)
+				option = menu.ChangeOption(episode);
+				if (option == 1)
 				{
 					menu.SetState(EPISODES);
-
 				}
-				else if ((menu.ChangeOption(episode) == 2))
+				else if (option == 2)
 				{
 					window.close();
 				}
 				break;
 			case EPISODES:
 				episode = menu.ChangeOption(episode);
-				if (!(episode == 0 || episode == 5))
+				if (episode == 1) //(!(episode == 0 || episode == 5))
 				{
 					menu.SetState(LEVELS);
 				}
@@ -106,6 +104,7 @@ int main() {
 					menu.Initialize();
 					game.Reset();
 					game.SetPaused(false);
+					game.StopMusic();
 				}
 			}
 
@@ -121,6 +120,15 @@ int main() {
 			}
 			if (game.GetPaused() == true)
 				menu.SetState(PAUSE);
+		}
+		if (game.GetVictory() == true)
+		{
+			level++;
+			menu.CheckLevelUnlocked(level);
+			menu.SaveSave();
+			game.SaveHighScore();
+			game.Reset();
+			game.StartLevel(level, section, episode);
 		}
 		game.Draw(window);
 		userInterface.DrawInGameStats(window);

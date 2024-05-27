@@ -204,6 +204,37 @@ void Menu::SaveSave()
 	SaveFile.close();
 }
 
+void Menu::CheckLevelUnlocked(int level)
+{
+	switch (_episode)
+	{
+	case 1:
+		if (level > _ep1knownLevels)
+		{
+			_ep1knownLevels = level;
+		}
+		break;
+	case 2:
+		if (level > _ep2knownLevels)
+		{
+			_ep1knownLevels = level;
+		}
+		break;
+	case 3:
+		if (level > _ep3knownLevels)
+		{
+			_ep1knownLevels = level;
+		}
+		break;
+	case 4:
+		if (level > _ep4knownLevels)
+		{
+			_ep1knownLevels = level;
+		}
+		break;
+	}
+}
+
 //Set the state to the parameter one, resets the option variable to 1 and change the maxOption depending on the menu state
 void Menu::SetState(int state)
 {
@@ -249,12 +280,16 @@ void Menu::UpdateText(int level)
 	switch (_state)
 	{
 	case TITLE:
+		_headerText.setString("© BY MARI0NO1 AND BIGPANDA");
+		_headerTextShadow.setString("© BY MARI0NO1 AND BIGPANDA");
 		_firstOption.setString("PLAY");
 		_secondOption.setString("EXIT");
 		_firstOptionShadow.setString("PLAY");
 		_secondOptionShadow.setString("EXIT");
 		_firstOptionY = 500;
 		_secondOptionY = 600;
+		_chooseEpisodeX = 1920 / 2;
+		_chooseEpisodeY = 1050;
 		break;
 	case EPISODES:
 		//Text
@@ -395,6 +430,8 @@ void Menu::Draw(sf::RenderWindow& window)
 		window.draw(_secondOptionShadow);
 		window.draw(_firstOption);
 		window.draw(_secondOption);
+		window.draw(_headerTextShadow);
+		window.draw(_headerText);
 		break;
 	case EPISODES:
 		window.draw(_textBG);
@@ -441,6 +478,7 @@ void Menu::Draw(sf::RenderWindow& window)
 		window.draw(_secondOptionShadow);
 		window.draw(_firstOption);
 		window.draw(_secondOption);
+		break;
 	}
 }
 
@@ -782,7 +820,8 @@ int Menu::ChangeOption(int episode)
 	{
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 		{
-			_changeSound.play();
+			if (_state != TITLE)
+				_changeSound.play();
 			_option = 1;
 			HighlightOption();
 			escapeIsPressed = true;
@@ -815,6 +854,15 @@ bool Menu::LoadLevelPreview(int level, int episode)
 	std::string middlePreviewPath = _levelPreviewPath;
 	std::string leftPreviewPath = _levelPreviewPath;
 	std::string rightPreviewPath = _levelPreviewPath;
+
+	middlePreviewPath.append(to_string(episode));
+	leftPreviewPath.append(to_string(episode));
+	rightPreviewPath.append(to_string(episode));
+
+	middlePreviewPath.append("/");
+	leftPreviewPath.append("/");
+	rightPreviewPath.append("/");
+
 	middlePreviewPath.append(to_string(level));
 	leftPreviewPath.append(to_string(level - 1));
 	rightPreviewPath.append(to_string(level + 1));

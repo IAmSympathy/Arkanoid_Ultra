@@ -154,7 +154,7 @@ void Brick::SetTexture(sf::Texture& texture)
 		_brick.setScale(0, 0);
 	}
 	_brick.setTextureRect(_rectSprite);
-	std::cout << "Brick textures has been changed" << endl;
+	std::cout << "[Brick] Texture has been changed" << endl;
 }
 
 void Brick::SetType(int type)

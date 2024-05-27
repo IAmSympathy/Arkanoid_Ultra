@@ -27,6 +27,7 @@ private:
 	int _score;
 	int _highscore;
 	int _level;
+	int _currentSection;
 
 	//Actors' Shadows
 	ObjectShadow _playerShadow;
@@ -36,7 +37,9 @@ private:
 	bool _isGameStarted;
 	int _ballCollision;
 	bool _isDead;
+	bool _victory;
 	bool _spawnSoundOnce;
+	bool _isMusicStarted;
 	bool _paused;
 	bool escapeKeyIsPressed;
 	enum playerStates { SPAWNING, ALIVE, DYING, EXPLODING };
@@ -64,6 +67,7 @@ public:
 	void StartLevel(int &level, int &section, int &episode);
 	void Play();
 	void Reset();
+	void StopMusic();
 	//Checks
 	void IsKeyPressed(sf::Event event);
 	void CheckPlayerLives(Player& player);
@@ -76,6 +80,7 @@ public:
 	int GetLevel() const;
 	int GetPlayerState();
 	bool GetPaused() const;
+	bool GetVictory() const;
 
 	//Setters
 	bool SetMusic(int section);

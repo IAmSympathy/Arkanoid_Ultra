@@ -18,11 +18,12 @@ class BrickField
 {
 private:
 	//Attributes
-	int _nbBrick;
+	int _nbBrickLeft;
 	int _score = 0;
 	std::vector<Brick> _field;
 	std::vector<Brick> _shadowField;
-
+	const std::string _levelPath = "ArkanoidUltra_Data/Levels/";
+	const std::string _levelFileExtension = ".txt";
 	//Textures
 	sf::Texture _textureNormal;
 	sf::Texture _textureSilver;
@@ -38,6 +39,7 @@ public:
 	void InitializeField(int level, int section);
 	void UpdateShadows(Ball ball);
 	void CountBrickLeft();
+	void Reset();
 
 	//Checks
 	void CheckCollision(Brick& brick, Ball& ball);
@@ -45,6 +47,7 @@ public:
 	//Getters
 	std::vector<Brick> GetField();
 	int GetScore();
+	int GetNbBrickLeft();
 
 	void SetField(std::vector<Brick>& field);
 	void SetScore(int score);

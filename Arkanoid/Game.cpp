@@ -11,6 +11,7 @@ using namespace std;
 
 Game::Game()
 {
+	_currentSection = 0;
 	_level = 1;
 	_lives = 3;
 	_score = 0;
@@ -20,7 +21,9 @@ Game::Game()
 	_isGameStarted = false;
 	_ballCollision = 0;
 	_isDead = false;
+	_victory = false;
 	_spawnSoundOnce = false;
+	_isMusicStarted = false;
 	_paused = false;
 	escapeKeyIsPressed = false;
 
@@ -55,6 +58,8 @@ Game::Game()
 //Starts a new level
 void Game::StartLevel(int &level, int &section, int &episode)
 {
+	_victory = false;
+	_currentSection = section;
 	_level = level;
 	if (level >= 1 && level <= 7)
 		section = 1;
@@ -66,6 +71,7 @@ void Game::StartLevel(int &level, int &section, int &episode)
 		section = 4;
 	else if (level == 31)
 		section = 5;
+	if(_currentSection != section)
 	SetMusic(section);
 	_music.setVolume(13.f);
 	LoadBackground(episode, section);
@@ -84,8 +90,12 @@ void Game::Play()
 {
 	if (_ball.GetStartMusic() == true)
 	{
-		_ball.SetStartMusic(false);
-		_music.play();
+		if (_isMusicStarted == false)
+		{
+			_isMusicStarted = true;
+			_music.play();
+		}
+
 	}
 
 	if (_paused == false)
@@ -115,15 +125,15 @@ void Game::Play()
 			_brickfield.CheckCollision(_field[i], _ball);
 		}
 		_brickfield.SetField(_field);
+		_field.clear();
 		SetScore();
+		_brickfield.CountBrickLeft();
 		//Player's actions
 		_player.Move();
 		_playerShadow.move(_player.GetPlayer());
 		if (_ball.GetState() == 0)
 			_ball.MoveThrow(_player.GetPlayer());
 		CheckPlayerLives(_player);
-		if (_lives == 0)
-			_music.stop();
 	}
 	
 	if (_player.GetPlayerStatus() == ALIVE) //If the player is ALIVE, allow to pause the game
@@ -135,7 +145,11 @@ void Game::Play()
 				cout << "[Game::Keybind] Escape key has been pressed" << endl;
 				escapeKeyIsPressed = true;
 				if (_paused == false)
+				{
 					_paused = true;
+					_music.pause();
+				}
+
 			}
 		}
 	}
@@ -171,19 +185,37 @@ void Game::Play()
 		_player.ExplodeAnimation();
 		break;
 	}
+
+	//Game Actions
 	if (_score > _highscore)
 	{
 		_highscore = _score;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))
+	{
+		_victory = true;
+	}
+	if (_brickfield.GetNbBrickLeft() == -1)
+	{
+		_victory = true;
 	}
 }
 
 //Resets the game stats when going back to the main menu
 void Game::Reset()
 {
-	_music.stop();
-	_score = 0;
-	_lives = 3;
+
+	if (_lives == 0)
+	{
+		_score = 0;
+		_lives = 3;
+		_player.SetLives(3);
+		_ball.SetStartMusic(false);
+		_isMusicStarted = false;
+		_music.stop();
+	}
 	_ball.Reset();
+	_brickfield.Reset();
 }
 
 int Game::GetLives() const
@@ -214,6 +246,11 @@ int Game::GetPlayerState()
 bool Game::GetPaused() const
 {
 	return _paused;
+}
+
+bool Game::GetVictory() const
+{
+	return _victory;
 }
 
 void Game::SetScore()
@@ -354,8 +391,8 @@ bool Game::LoadBorder(int size)
 			return false;
 		_borderBG.setTexture(&_textureBorderBG);
 
-		_leftBorder = 544;
-		_rightBorder = 1372;
+		_leftBorder = 569;
+		_rightBorder = 1350;
 		_upBorder = 152;
 	}
 }
@@ -376,6 +413,10 @@ bool Game::SetMusic(int section)
 void Game::SetPaused(bool value)
 {
 	_paused = value;
+	if (value == false)
+	{
+		_music.play();
+	}
 }
 
 //Checks if a key is released, so it can be pressed again
@@ -412,6 +453,11 @@ double Game::CheckCollision(Player player, Ball ball)
 	}
 	else
 		return -6969;
+}
+
+void Game::StopMusic()
+{
+	_music.stop();
 }
 
 void Game::Draw(sf::RenderWindow& window)

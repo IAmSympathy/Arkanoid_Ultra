@@ -110,6 +110,7 @@ public:
 	void UpdateTextBG();
 	//Checks
 	void IsKeyPressed(sf::Event event);
+	void CheckLevelUnlocked(int level);
 
 	//Getters
 	int GetState() const;

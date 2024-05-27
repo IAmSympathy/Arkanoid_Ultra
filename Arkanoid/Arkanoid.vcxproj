@@ -150,13 +150,12 @@
     <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Ressources\Sprites\Ball.png" />
-    <Image Include="Ressources\Sprites\LevelBG1.png" />
-    <Image Include="Ressources\Sprites\Player.png" />
-    <Image Include="Ressources\Sprites\Titre.png" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Text Include="ArkanoidUltra_Data\Levels\1.txt" />
+    <Text Include="ArkanoidUltra_Data\saveEpisode.txt" />
+    <Text Include="ArkanoidUltra_Data\saveHighScore.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

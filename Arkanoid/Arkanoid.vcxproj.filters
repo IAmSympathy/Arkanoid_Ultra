@@ -70,20 +70,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Ressources\Sprites\Titre.png">
-      <Filter>Fichiers de ressources</Filter>
-    </Image>
-    <Image Include="Ressources\Sprites\Player.png">
-      <Filter>Fichiers de ressources</Filter>
-    </Image>
-    <Image Include="Ressources\Sprites\LevelBG1.png">
-      <Filter>Fichiers de ressources</Filter>
-    </Image>
-    <Image Include="Ressources\Sprites\Ball.png">
-      <Filter>Fichiers de ressources</Filter>
-    </Image>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Text Include="ArkanoidUltra_Data\saveEpisode.txt">
+      <Filter>Fichiers de ressources</Filter>
+    </Text>
+    <Text Include="ArkanoidUltra_Data\saveHighScore.txt">
+      <Filter>Fichiers de ressources</Filter>
+    </Text>
+    <Text Include="ArkanoidUltra_Data\Levels\1.txt">
+      <Filter>Fichiers de ressources</Filter>
+    </Text>
   </ItemGroup>
 </Project>

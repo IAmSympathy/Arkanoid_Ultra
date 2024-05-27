@@ -84,23 +84,28 @@ void BrickField::CheckCollision(Brick& brick, Ball& ball)
 void BrickField::InitializeField(int level, int section)
 {
 	LoadTexture();
-
+	char isEnter = 0;
 	Vector2f position(510, 272);
 	std::vector<char> typeField;
 	char currentType = ' ';
 	std::string currentLine;
 	int lineAmount = 0;
+	int collumnAmount = 0;
 	int counter = 0;
+	string currentLevelPath = _levelPath;
+	currentLevelPath.append(to_string(level));
+	currentLevelPath.append(_levelFileExtension);
 
 	ifstream levelFile;
-	levelFile.open("ArkanoidUltra_Data/Levels/1.txt");
-
+	levelFile.open(currentLevelPath);
 	while (getline(levelFile, currentLine))
 	{
+		collumnAmount = currentLine.length();
 		lineAmount++;
 	}
 	levelFile.close();
-	levelFile.open("ArkanoidUltra_Data/Levels/1.txt");
+
+	levelFile.open(currentLevelPath);
 	while (!levelFile.eof())
 	{
 		levelFile.get(currentType);
@@ -112,12 +117,12 @@ void BrickField::InitializeField(int level, int section)
 	currentType = ' ';
 	for (int y = 1; y < lineAmount + 1; y++)
 	{
-		for (int x = 1; x <= 13; x++)
+		for (int x = 1; x <= collumnAmount; x++)
 		{
 			currentType = typeField.at(counter);
 			if (currentType == '_')
 			{
-				currentType -= 48;
+				currentType = -48;
 			}
 			currentType -= 48;
 			Brick newBrick(currentType);
@@ -127,6 +132,10 @@ void BrickField::InitializeField(int level, int section)
 			{
 				newBrick.SilverPoint(level);
 				newBrick.SilverHealth(section);
+			}
+			if (newBrick.GetType() == -96)
+			{
+				newBrick.SetHealth(0);
 			}
 			switch (currentType)
 			{
@@ -144,6 +153,7 @@ void BrickField::InitializeField(int level, int section)
 			counter++;
 		}
 	}
+	typeField.clear();
 	levelFile.close();
 }
 
@@ -175,6 +185,11 @@ int BrickField::GetScore()
 	return _score;
 }
 
+int BrickField::GetNbBrickLeft()
+{
+	return _nbBrickLeft;
+}
+
 void BrickField::SetField(std::vector<Brick>& field)
 {
 	for (int i = 0; i < field.size(); i++)
@@ -191,7 +206,6 @@ void BrickField::SetScore(int score)
 {
 	_score = score;
 }
-
 
 bool BrickField::LoadTexture()
 {
@@ -224,9 +238,6 @@ void BrickField::Draw(sf::RenderWindow& window, Ball ball)
 			case 9:
 				_field[i].SetTexture(_textureGold);
 				break;
-			default:
-				_field[i].SetTexture(_textureNormal);
-				break;
 			}
 			window.draw(_shadowField[i].GetBrick());
 			window.draw(_field[i].GetBrick());
@@ -241,12 +252,22 @@ void BrickField::CountBrickLeft()
 	{
 		if (_field[i].GetHealth() > 0)
 		{
-			_nbBrick++;
+			_nbBrickLeft++;
 		}
 	}
 	//Resets the number of brick counted if it is not equal to 0
-	if (_nbBrick != 0)
+	if (_nbBrickLeft != 0)
 	{
-		_nbBrick = 0;
+		_nbBrickLeft = 0;
 	}
+	else if (_nbBrickLeft == 0)
+	{
+		_nbBrickLeft = -1;
+	}
+}
+
+void BrickField::Reset()
+{
+	_field.clear();
+	_shadowField.clear();
 }
