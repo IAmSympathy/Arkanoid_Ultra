@@ -1,7 +1,4 @@
 ![Logo](https://github.com/Mari0no1/Arkanoid_Ultra/assets/110695959/538b7e5b-5b17-47d3-a0de-396c2343e614)
-# End of Semestry version
-This is the version that was sent to our programming teacher.
-
 # Contains
 - Fully functionnal menu with episode and level selection
 - 3 levels in Episode 1 **(WILL CRASH IF YOU COMPLETE  LEVEL 3 !!)**
