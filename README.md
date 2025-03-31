@@ -19,6 +19,7 @@ This project was created as part of a school program and is unlikely to be compl
 
 # Credits
 @LoucasQ2 for the base for the menu, the bricks and saving logic.
+
 @Mari0no1 Everything else.
 
 ![image](https://github.com/Mari0no1/Arkanoid_Ultra/assets/110695959/1607ed7c-ce99-4ff0-8b77-f2a092c0f9a3)
