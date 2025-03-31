@@ -1,4 +1,6 @@
 ![Logo](https://github.com/Mari0no1/Arkanoid_Ultra/assets/110695959/538b7e5b-5b17-47d3-a0de-396c2343e614)
+This project was created as part of a school program and is unlikely to be completed.
+
 # Contains
 - Fully functionnal menu with episode and level selection
 - 3 levels in Episode 1 **(WILL CRASH IF YOU COMPLETE  LEVEL 3 !!)**
