@@ -18,9 +18,9 @@ This project was created as part of a school program and is unlikely to be compl
 - Add enemies and bosses
 
 # Credits
-@LoucasQ2 for the base for the menu, the bricks and saving logic.
+@LoucasQ2 – Base for the menu, bricks, and saving logic.
 
-@Mari0no1 Everything else.
+@Mari0no1 – Everything else.
 
 ![image](https://github.com/Mari0no1/Arkanoid_Ultra/assets/110695959/1607ed7c-ce99-4ff0-8b77-f2a092c0f9a3)
 ![image](https://github.com/Mari0no1/Arkanoid_Ultra/assets/110695959/0a1023e8-4ce1-4e12-a378-001a523ffe55)
